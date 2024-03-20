@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>SkidX</title>
+</head>
+<body>
+    <div class="sidebar">
+        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
+    </div>
+    <div class="content" id="mainContent">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <h1>This is a proof of concept</h1>
+        <p>It will be very buggy</p>
+        <div id="fileContent">
+            {% if file_content is none %}
+            <h2>This file is still procecing</h2>
+                <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading giph" width="300" height="300">
+            {% else %}
+                <h2>Network requests:</h2>
+                <pre style="font-size: 20px;">{% for line in file_content %}{% if 'discord.com/api' in line %}<span style="background-color: yellow;">{{ line }}</span>{% else %}{{ line }}{% endif %}{% endfor %}</pre>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function loadPage(route) {
+            console.log("Navigating to: " + route);
+            window.location.href = "/" + route;
+            return false;
+        }
+
+        function checkFileStatus() {
+            fetch('/check_file_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.fileExists) {
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Error checking file status:', error));
+        }
+        var the_content = '{{ file_content }}'
+        if (the_content == "None"){
+            setInterval(checkFileStatus, 10000); // 10 seconds
+        } else {
+            clearInterval()
+        }
+    </script>
+</body>
+</html>

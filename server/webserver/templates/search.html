@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>SkidX</title>
+</head>
+<body>
+    <div class="sidebar">
+        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
+    </div> 
+<div class="content" id="mainContent">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+    <h1>This is a proof of concept</h1>
+    <p>It will be very buggy</p>
+    <h1>Reports</h1>
+
+    <!-- Buttons for dynamically loaded files -->
+    <div id="fileButtons"></div>
+</div>
+<script>
+    function loadPage(route) {
+        console.log("Navigating to: " + route);
+        window.location.href = "/" + route;
+        return false;
+    }
+
+    // Generate buttons for the files
+    function generateFileButtons() {
+        fetch('/get_files')
+            .then(response => response.json())
+            .then(data => {
+                const fileButtons = document.getElementById('fileButtons');
+                data.forEach(file => {
+                    const button = document.createElement('button');
+                    button.textContent = file;
+                    button.className = 'sidebar-button';
+                    button.onclick = function () {
+                        loadPage('display/' + file.replace(/\.[^/.]+$/, ''));
+                    };
+                    fileButtons.appendChild(button);
+                });
+            })
+            .catch(error => console.error('Error fetching file list:', error));
+    }
+
+    // Generate the buttons when the page loads
+    window.onload = generateFileButtons;
+</script>
+</body>
+</html>

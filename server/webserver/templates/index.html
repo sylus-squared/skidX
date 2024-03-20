@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        <title>SkidX</title>
+    </head>
+<body>
+    <div class="sidebar">
+        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
+    </div>
+    <div class="content" id="mainContent">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <h1>This is a proof of concept</h1>
+        <p>It will be very buggy</p>
+
+        <form id="uploadForm">
+            <input type="file" id="fileInput" name="fileInput" accept="image/*">
+            <button type="button" onclick="confirmUpload()">Confirm Upload</button>
+        </form>
+    </div>
+    <script>
+        function loadPage(route) {
+            console.log("Navigating to: " + route);
+            window.location.href = "/" + route;
+            return false;
+        }
+
+        function confirmUpload() {
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+    
+            if (file) {
+                var formData = new FormData();
+                formData.append('fileInput', file);
+    
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://localhost:5000/upload', true);
+    
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert('File uploaded successfully!');
+                    } else {
+                        alert('Error uploading file. Please try again.');
+                    }
+                };
+    
+                xhr.send(formData);
+            } else {
+                alert('Please select a file to upload.');
+            }
+        }
+    </script>
+</body>
+</html>

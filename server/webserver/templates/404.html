@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>SkidX</title>
+</head>
+<body>
+    <div class="sidebar">
+        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
+    </div> 
+    <div class="content" id="mainContent" style="text-align: center;">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <img src="{{ url_for('static', filename='404.png') }}" alt="Error image cat">
+    </div>
+    <script>
+        function loadPage(route) {
+            console.log("Navigating to: " + route);
+            window.location.href = "/" + route;
+            return false;
+        }
+    </script>
+</body>
+</html>

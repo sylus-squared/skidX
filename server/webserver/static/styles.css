@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+pre {
+    font-size: 18px;
+}
+
+.sidebar {
+    background-color: #737f8f;
+    height: 100vh; /* Full height of the viewport */
+    width: 200px;
+    padding: 20px;
+    box-sizing: border-box;
+    float: left;
+}
+
+.sidebar-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #506784;
+    color: #ffffff; /* Text color */
+    border: none;
+    text-align: left;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.content {
+    margin-left: 200px;
+    padding: 20px;
+    box-sizing: border-box;
+}
