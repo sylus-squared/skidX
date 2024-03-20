@@ -16,8 +16,9 @@ skidX detonates the sample on the sandbox VM and collects network data (and othe
 Flask webserver for uploading files for analysis and viewing the results <br/>
 Client for the sandbox VM to detonate the malware <br/>
 Highlighting of potential C2's in the results <br/>
-Support for automatically reverting the VM to a specified snapshot Proxmox only (potentially) <br/>
+Support for automatically reverting the VM to a specified snapshot for Proxmox only (potentially) <br/>
 A que for multiple files <br/>
+Documentation <br/>
 Support for automatically reverting the VM (proxmox only (potentially)) <br/>
 ### V1 
 YARA rules for identifying different strains of infostealers <br/>
