@@ -32,27 +32,43 @@
         function confirmUpload() {
             var fileInput = document.getElementById('fileInput');
             var file = fileInput.files[0];
-    
+
             if (file) {
-                var formData = new FormData();
-                formData.append('fileInput', file);
-    
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:5000/upload', true);
-    
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        alert('File uploaded successfully!');
-                    } else {
-                        alert('Error uploading file. Please try again.');
-                    }
+                var reader = new FileReader();
+
+                reader.onload = async function(event) {
+                    var formData = new FormData();
+                    formData.append('fileInput', file);
+
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'http://localhost:5000/upload', true);
+
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            var response = JSON.parse(xhr.responseText);
+                            var hash = response.hash;
+                            loadPage('display/' + hash);
+                        } else {
+                            alert('Error uploading file. Please try again.');
+                        }
+                    };
+
+                    xhr.send(formData);
                 };
-    
-                xhr.send(formData);
+
+                reader.readAsArrayBuffer(file);
             } else {
                 alert('Please select a file to upload.');
             }
         }
+
+        function loadPage(route) {
+            console.log("Navigating to: " + route);
+            window.location.href = "/" + route;
+            return false;
+        }
+
+
     </script>
 </body>
 </html>

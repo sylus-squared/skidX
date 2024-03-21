@@ -18,11 +18,11 @@
         <p>It will be very buggy</p>
         <div id="fileContent">
             {% if file_content is none %}
-            <h2>This file is still procecing</h2>
-                <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading giph" width="300" height="300">
+            <h2>This file is still processing</h2>
+            <img src="{{ url_for('static', filename='loading.gif') }}" alt="Loading gif" width="300" height="300">
             {% else %}
-                <h2>Network requests:</h2>
-                <pre style="font-size: 20px;">{% for line in file_content %}{% if 'discord.com/api' in line %}<span style="background-color: yellow;">{{ line }}</span>{% else %}{{ line }}{% endif %}{% endfor %}</pre>
+            <h2>Network requests:</h2>
+            <pre style="font-size: 20px;">{% for line in file_content %}{% if 'discord.com/api' in line %}<span style="background-color: yellow;">{{ line }}</span>{% else %}{{ line }}{% endif %}{% endfor %}</pre>
             {% endif %}
         </div>
     </div>
@@ -35,7 +35,8 @@
         }
 
         function checkFileStatus() {
-            fetch('/check_file_status')
+            var fileName = window.location.pathname.split('/').pop();
+            fetch('/check_file_status/' + fileName)
                 .then(response => response.json())
                 .then(data => {
                     if (data.fileExists) {
@@ -44,11 +45,12 @@
                 })
                 .catch(error => console.error('Error checking file status:', error));
         }
-        var the_content = '{{ file_content }}'
-        if (the_content == "None"){
+
+        var fileContent = '{{ file_content }}';
+        if (fileContent === "None") {
             setInterval(checkFileStatus, 10000); // 10 seconds
         } else {
-            clearInterval()
+            clearInterval();
         }
     </script>
 </body>

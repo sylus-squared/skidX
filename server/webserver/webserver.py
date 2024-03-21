@@ -5,8 +5,10 @@ import scripts.uploadFile as uploader
 import os
 import yaml
 import hashlib
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 analysis_in_progress = []
@@ -31,8 +33,12 @@ def search():
 
 @app.route('/get_files')
 def get_files():
-    data_dir = 'data'
-    files = [f for f in os.listdir(data_dir) if os.path.isfile(os.path.join(data_dir, f))]
+    data_dir = 'data'              # Take this all off one line
+    files = [
+        os.path.splitext(f)[0]
+        for f in os.listdir(data_dir) 
+        if os.path.isfile(os.path.join(data_dir, f))
+    ]
     return jsonify(files)
 
 @app.errorhandler(404)
@@ -43,7 +49,6 @@ def not_found(e):
 def favicon():
     return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/display')
 @app.route('/display/<file>')
 def display(file="test"):
     file_path = os.path.join(os.path.dirname(__file__), 'data', file + ".txt")
@@ -53,6 +58,8 @@ def display(file="test"):
         with open(file_path, 'r') as file:
             file_content = file.readlines()
     except FileNotFoundError:
+        print(file_name_with_extension)
+        print(analysis_in_progress)
         if file_name_with_extension in analysis_in_progress:
             return render_template('analysisPage.html', file_content=None)
         print("ERROR file content is none")
@@ -60,10 +67,10 @@ def display(file="test"):
     
     return render_template('analysisPage.html', file_content=file_content)
 
-@app.route('/check_file_status')
-def check_file_status():
+@app.route('/check_file_status/<file>')
+def check_file_status(file):
     data_dir = 'data'
-    file_path = os.path.join(data_dir, 'example.txt')
+    file_path = os.path.join(data_dir, file + ".txt")
     
     file_exists = os.path.exists(file_path)
     file_content = ''
@@ -91,9 +98,22 @@ def upload_file():
         new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
         uploader.upload_file(os.path.join(app.config['UPLOAD_FOLDER'], new_filename), config)
-        return jsonify({'success': True, 'message': 'File uploaded successfully'}), 200
+        
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+        file_hash = hashlib.sha256()
+        with open(file_path, 'rb') as file:
+            file_hash.update(file.read())
+
+        file_name = file_hash.hexdigest()
+        analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work 
+        return jsonify({'success': 'Upload success', 'hash': file_name}), 200
     else:
-        return jsonify({'error': 'Invalid file type'}), 400 
+        return jsonify({'error': 'Invalid file type'}), 400
+    
+@app.route('/result', methods=['POST'])
+def result():
+    # Get the results from the endpoint and save it to a file
+    pass
 
 #---------------------------------------------------------------------------
 

@@ -1,4 +1,6 @@
 import socket
+import hashlib
+import os
 
 def send_file(file_path, server_address, server_port, interfaces_ip):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -6,6 +8,17 @@ def send_file(file_path, server_address, server_port, interfaces_ip):
 
     client_socket.connect((server_address, server_port))
 
+    # Calculate the SHA-256 hash of the file
+    file_hash = hashlib.sha256()
+    with open(file_path, 'rb') as file:
+        file_hash.update(file.read())
+
+    _, file_extension = os.path.splitext(file_path)
+
+    file_name = file_hash.hexdigest() + file_extension # Send the SHA-256 hash as the file name
+    client_socket.send(file_name.encode())
+
+    # Send the file data
     with open(file_path, 'rb') as file:
         data = file.read(1024)
         while data:
@@ -15,11 +28,8 @@ def send_file(file_path, server_address, server_port, interfaces_ip):
     client_socket.close()
 
 def upload_file(file_path, config):
-    file_to_send = file_path.encode()
-    
     interface_ip = config["connection"]["interfaceip"]
-        
     server_ip = config["connection"]["clientIP"]
     server_port = config["connection"]["port"]
 
-    send_file(file_to_send, server_ip, server_port, interface_ip)
+    send_file(file_path, server_ip, server_port, interface_ip)
