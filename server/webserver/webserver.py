@@ -33,7 +33,7 @@ def search():
 
 @app.route('/get_files')
 def get_files():
-    data_dir = 'data'              # Take this all off one line
+    data_dir = 'data'
     files = [
         os.path.splitext(f)[0]
         for f in os.listdir(data_dir) 
