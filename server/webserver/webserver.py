@@ -19,9 +19,6 @@ with open('config/config.yml', 'r') as file:
 def allowed_file(filename):        # This will be just .jar in the furture and is just for testing
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
 
-def hash_data(data):
-    data_hash = hashlib.sha256(data.encode('utf-8')).hexdigest()
-    return data_hash
 #---------------------------------------------------------------------------
 @app.route('/')
 def index():
