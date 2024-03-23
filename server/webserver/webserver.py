@@ -109,8 +109,18 @@ def upload_file():
     
 @app.route('/result', methods=['POST'])
 def result():
-    # Get the results from the endpoint and save it to a file
-    pass
+    if 'file' not in request.files:
+        return 'No file part in the request', 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file', 400
+
+    if file:
+        file.save(os.path.join('data', file.filename))
+        return 'File uploaded successfully', 200
+    else:
+        return 'Error saving file', 500
 
 #---------------------------------------------------------------------------
 
