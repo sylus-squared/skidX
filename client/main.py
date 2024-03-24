@@ -1,5 +1,5 @@
 import time
-#import requests
+import requests
 #import yaml
 import subprocess
 import minecraft_launcher_lib

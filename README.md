@@ -3,7 +3,7 @@
 **Important note**<br/>
 *This project is currently at a very early stage and when done will only be a proof of concept (code coming soon). Because of this I would not recommend using this any time soon. It will most likely be insecure and resource intensive (especially on the sandbox VM).* <br/>
 # What is it? 
-skiX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
+skiX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft (and forge/fabric) is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
 
 And while there are solutions to tell if a mod is malicious (see [isthisarat](isthisarat.com)) extracting the C2 can be difficult by just looking at the code (especially if its been obfuscated). <br/>
 
@@ -16,16 +16,15 @@ skidX detonates the sample on the sandbox VM and collects network data (and othe
 Flask webserver for uploading files for analysis and viewing the results <br/>
 Client for the sandbox VM to detonate the malware <br/>
 Highlighting of potential C2's in the results <br/>
-Support for automatically reverting the VM to a specified snapshot for Proxmox only (potentially) <br/>
+Support for automatically reverting the VM to a specified snapshot for Proxmox (potentially) <br/>
 A que for multiple files <br/>
 Documentation <br/>
-Support for automatically reverting the VM (proxmox only (potentially)) <br/>
 ### V1 
 YARA rules for identifying different strains of infostealers <br/>
 Migration of the webserver from flask to something like waitress combined with nginx <br/>
 Headless client for the sandbox VM <br/>
 A malicious score out of 100 <br/>
-Support for KVM (potentially) <br/>
+Support for KVM and nested virtualization (potentially) <br/>
 Nicer looking webserver <br/>
 An API (probbly JSON based) <br/>
 Support for multiple VM's at once<br/>
@@ -36,4 +35,4 @@ Automated writing of mediafire reports based (just the description not actually 
 Geolocation of requests <br/>
 Script for automatically finding and downloading samples <br/>
 
-*There will most likely be a more I have forgotten to add and this list will change a lot*
+*There will most likely be a more I have forgotten to add and this list will change*
