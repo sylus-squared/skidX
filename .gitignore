@@ -3,3 +3,4 @@ testing/
 client/minecraft_files
 minecraft_files/
 logs/
+server/webserver/__pycache__/
