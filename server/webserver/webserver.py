@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 from werkzeug.utils import secure_filename
-from flask import render_template
 import scripts.uploadFile as uploader
 import os
 import yaml
 import hashlib
+import re
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -51,6 +51,10 @@ def display(file="test"):
     file_path = os.path.join(os.path.dirname(__file__), 'data', file + ".txt")
     print(file_path)
     file_name_with_extension = os.path.basename(file_path)
+    
+    if re.search(r'[;\'"]', file):
+        return render_template('stupid.html') # Check for SQL injection (just for fun)
+    
     try:
         with open(file_path, 'r') as file:
             file_content = file.readlines()

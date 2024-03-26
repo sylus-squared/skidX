@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>SkidX</title>
+</head>
+<body>
+    <div class="sidebar">
+        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('hello')">Hello</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('hello/jane-doe')">Hello Jane</button>
+    </div>
+    <div class="content" id="mainContent" style="text-align: center;">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <img src="{{ url_for('static', filename='hippityhoppity.png') }}" alt="Skid image">
+        <h1>This was created to defeat people like you</h1>
+        <h1>Now get out of my swamp >:(</h1>
+    </div>
+    <script>
+        function loadPage(route) {
+            console.log("Navigating to: " + route);
+            window.location.href = "/" + route;
+            return false;
+        }
+
+        function toggleBackground() {
+            var currentColor = document.body.style.backgroundColor;
+            if (currentColor === 'red') {
+                document.body.style.backgroundColor = 'white';
+            } else {
+                document.body.style.backgroundColor = 'red';
+            }
+        }
+
+        setInterval(toggleBackground, 500); // Half a second
+    </script>
+</body>
+</html>
