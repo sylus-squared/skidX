@@ -106,7 +106,7 @@ def upload_file():
             file_hash.update(file.read())
 
         file_name = file_hash.hexdigest()
-        analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work 
+        analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
         return jsonify({'success': 'Upload success', 'hash': file_name}), 200
     else:
         return jsonify({'error': 'Invalid file type'}), 400
