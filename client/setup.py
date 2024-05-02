@@ -19,7 +19,7 @@ List of packages:
 pyyaml
 more to come
 """
-
+# This will be worked on as packages are needed, but for now its not necacery
 data = {
     'connection': {
         'serverIP': "127.0.0.1", # Deafult is 127.0.0.1
