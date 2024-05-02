@@ -46,6 +46,10 @@ def not_found(e):
 def favicon():
     return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+@app.route('/setup')
+def setup_files():
+    return True # This will return the portablemc.exe file
+
 @app.route('/display/<file>')
 def display(file="test"):
     file_path = os.path.join(os.path.dirname(__file__), 'data', file + ".txt")

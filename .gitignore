@@ -1,7 +1,4 @@
 testing_samples/
 testing/
-client/minecraft_files
-minecraft_files/
-logs/
-server/webserver/data/
 server/webserver/__pycache__/
+server/webserver/uploads/
