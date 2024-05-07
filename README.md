@@ -10,7 +10,8 @@ And while there are solutions to tell if a mod is malicious (see [isthisarat](is
 This project aims to change that. <br/>
 
 skidX detonates the sample on the sandbox VM and collects network data (and other stuff in the future) using inetsym then displays said data in a nice easy to read format. All the user has to do is upload the file, wait a few mins and look at the log. <br/>
-skidX currently uses a modified version of headlessmc, its a brilliant project go check it out [here](github.com/3arthqu4ke/headlessmc) <br/>
+skidX currently uses a modified version of headlessmc, its a brilliant project go check it out: <br/>
+github.com/3arthqu4ke/headlessmc <br/>
 
 # Roadmap 
 ### Proof of concept 
