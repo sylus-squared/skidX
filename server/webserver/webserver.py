@@ -1,11 +1,17 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template, send_file, abort
 from werkzeug.utils import secure_filename
 import scripts.uploadFile as uploader
 import os
 import yaml
 import hashlib
 import re
+import socket
 from flask_cors import CORS
+
+"""
+TODO
+Make the webserver send files with the correct name and extention
+"""
 
 app = Flask(__name__)
 CORS(app)
@@ -46,9 +52,49 @@ def not_found(e):
 def favicon():
     return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/setup')
-def setup_files():
-    return True # This will return the portablemc.exe file
+@app.route('/setup', methods=['GET'])
+def send_file():
+    filename = request.args.get('filename') # Get the filename and directory from request parameters
+    directory = request.args.get('directory')
+
+    if not filename or not directory:
+        abort(400, 'Both filename and directory are required.')
+
+    if not os.path.exists(directory): # Check if the directory actually exists
+        abort(404, 'Directory not found.')
+
+    file_path = os.path.join(directory, filename) # Check if the file actually exists
+    if not os.path.exists(file_path):
+        abort(404, 'File not found.')
+
+    return send_file(file_path, as_attachment=True)
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'fileInput' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['fileInput']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+        uploader.upload_file(os.path.join(app.config['UPLOAD_FOLDER'], new_filename), config)
+        
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+        file_hash = hashlib.sha256()
+        with open(file_path, 'rb') as file:
+            file_hash.update(file.read())
+
+        file_name = file_hash.hexdigest()
+        analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
+        return jsonify({'success': 'Upload success', 'hash': file_name}), 200
+    else:
+        return jsonify({'error': 'Invalid file type'}), 400
 
 @app.route('/display/<file>')
 def display(file="test"):

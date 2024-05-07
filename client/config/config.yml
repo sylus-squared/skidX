@@ -1,4 +1,5 @@
+clientConfig:
+  idk: idk
 connection:
-  clientIP: 127.0.0.1 # Deafult is localhost
-  port: 12345 # Deafult is 8080
-  interfaceip: 127.0.0.1
+  serverIP: 127.0.0.1
+  serverPort: 12345

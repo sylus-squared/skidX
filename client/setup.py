@@ -1,5 +1,8 @@
 import yaml
 import requests
+import time
+import os
+from os.path import exists
 
 """
 The config.yml file is structured as follows:
@@ -22,14 +25,32 @@ more to come
 # This will be worked on as packages are needed, but for now its not necacery
 data = {
     'connection': {
-        'serverIP': "127.0.0.1", # Deafult is 127.0.0.1
-        'serverPort': 12345 # Deafult is 127.0.0.1
+        'serverIP': "127.0.0.1",  # Default is 127.0.0.1
+        'serverPort': 12345  # Default is 12345
     },
     'clientConfig': {
         'idk': 'idk',
     }
-
 }
-with open("config.yml", "w") as file:
-    yaml.dump(data, file, deafult_flow_style=False)
+if exists("config/config.yml"):
+    print("Config file already exists")
+else:
+    with open("config/config.yml", "w") as file:
+        yaml.dump(data, file, default_flow_style=False)
 
+url = 'http://localhost:5000/setup'
+filename = 'portablemc.exe'
+directory = '/setupFiles'
+
+try:
+    response = requests.get(url, params={'filename': filename, 'directory': directory})
+    if response.status_code == 200:
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        print('File downloaded successfully.')
+    else:
+        print('[ERROR]: ', response.text)
+        input("press enter to quit ")
+except:
+    print("[ERROR]: webserver most likley offline")
+    input("Press enter to quit")
