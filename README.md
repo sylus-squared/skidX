@@ -5,7 +5,7 @@
 # What is it? 
 skiX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft (and forge/fabric) is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
 
-And while there are solutions to tell if a mod is malicious (see [isthisarat](isthisarat.com)) extracting the C2 can be difficult by just looking at the code (especially if its been obfuscated). <br/>
+And while there are solutions to tell if a mod is malicious (see [isthisarat](isthisarat.com)) extracting the C2 can be difficult by just analysing the code (especially if its been obfuscated). <br/>
 
 This project aims to change that. <br/>
 
