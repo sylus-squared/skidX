@@ -10,19 +10,20 @@ And while there are solutions to tell if a mod is malicious (see [isthisarat](is
 This project aims to change that. <br/>
 
 skidX detonates the sample on the sandbox VM and collects network data (and other stuff in the future) using inetsym then displays said data in a nice easy to read format. All the user has to do is upload the file, wait a few mins and look at the log. <br/>
+skidX currently uses a modified version of headlessmc, its a brilliant project go check it out [here](github.com/3arthqu4ke/headlessmc) <br/>
 
 # Roadmap 
 ### Proof of concept 
 Flask webserver for uploading files for analysis and viewing the results <br/>
 Client for the sandbox VM to detonate the malware <br/>
 Highlighting of potential C2's in the results <br/>
+Headless client for the sandbox VM <br/>
 Support for automatically reverting the VM to a specified snapshot for Proxmox (potentially) <br/>
 A que for multiple files, although only will file can run at a time <br/>
 Documentation (probbly the bare minimum for the POC) <br/>
 ### V1 
 YARA rules for identifying different strains of infostealers <br/>
 Migration of the webserver from flask to something like waitress combined with nginx <br/>
-Headless client for the sandbox VM <br/>
 A malicious score out of 100 <br/>
 Support for KVM and nested virtualization (potentially) <br/>
 Nicer looking webserver <br/>
