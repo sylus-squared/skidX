@@ -16,4 +16,5 @@ Execute the downloded file with a headless minecraft instance (forge and fabric)
 Analyse the executed file with self written YARA rules
 Encrypt the verdict and send it to the server (needs to be encrypted because there is malware running on the system)
 """
-# Switched from minecraft_launcher_lib to portablemc, will add code for it soon
+# Switched from due to the lack of openGL on the client sandbox, headlessMC will be used now 
+# Will add code for it soon
