@@ -3,7 +3,7 @@
 **Important note**<br/>
 *This project is currently at a very early stage and is just a proof of concept. Because of this I would not recommend using this any time soon. It will most likely be insecure and resource intensive (especially on the sandbox VM).* <br/>
 # What is it? 
-skiX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft (and forge/fabric) is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
+skidX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft (and forge/fabric) is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
 
 And while there are solutions to tell if a mod is malicious (see [isthisarat](https://isthisarat.com)) extracting the C2 can be difficult by just analysing the code (especially if its been obfuscated). <br/>
 
@@ -21,6 +21,7 @@ Headless client for the sandbox VM <br/>
 Support for automatically reverting the VM to a specified snapshot for Proxmox (potentially) <br/>
 A que for multiple files, although only will file can run at a time <br/>
 Documentation (probbly the bare minimum for the POC) <br/>
+HTTPS decryption with polar proxy <br/>
 ### V1 
 YARA rules for identifying different strains of infostealers <br/>
 Migration of the webserver from flask to something like waitress combined with nginx <br/>
