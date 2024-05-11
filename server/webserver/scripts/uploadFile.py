@@ -31,5 +31,5 @@ def upload_file(file_path, config):
     interface_ip = config["connection"]["interfaceip"]
     server_ip = config["connection"]["clientIP"]
     server_port = config["connection"]["port"]
-
+    
     send_file(file_path, server_ip, server_port, interface_ip)

@@ -3,3 +3,4 @@ testing/
 server/webserver/__pycache__/
 server/webserver/uploads/
 server/webserver/scripts/__pycache__/
+server/webserver/scripts/__pycache__/

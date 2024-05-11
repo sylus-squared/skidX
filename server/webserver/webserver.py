@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import scripts.uploadFile as uploader
 import os
 import yaml
+import scripts.uploadFile
 import hashlib
 import re
 import socket
@@ -11,6 +12,7 @@ from flask_cors import CORS
 """
 TODO
 Make the webserver send files with the correct name and extention
+Stop the display endpoint from needing the file extention in analysis_in_progress
 """
 
 app = Flask(__name__)
@@ -89,9 +91,14 @@ def upload_file():
         file_hash = hashlib.sha256()
         with open(file_path, 'rb') as file:
             file_hash.update(file.read())
-
         file_name = file_hash.hexdigest()
-        analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
+    
+        try:
+            upload_file(app.config['UPLOAD_FOLDER'], config)
+            analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
+        except:
+            print("[ERROR]: Error has happened")
+
         return jsonify({'success': 'Upload success', 'hash': file_name}), 200
     else:
         return jsonify({'error': 'Invalid file type'}), 400
@@ -102,8 +109,8 @@ def display(file="test"):
     print(file_path)
     file_name_with_extension = os.path.basename(file_path)
     
-    if re.search(r'[;\'"]', file):
-        return render_template('stupid.html') # Check for SQL injection (just for fun)
+    if re.search(r'[;\'"]', file): # Check for SQL injection (the backend doesn't use a database :), this is just to troll people that try)
+        return render_template('stupid.html')
     
     try:
         with open(file_path, 'r') as file:
@@ -134,32 +141,6 @@ def check_file_status(file):
 
     return jsonify({'fileExists': file_exists, 'fileContent': file_content})
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'fileInput' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-
-    file = request.files['fileInput']
-
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
-        uploader.upload_file(os.path.join(app.config['UPLOAD_FOLDER'], new_filename), config)
-        
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
-        file_hash = hashlib.sha256()
-        with open(file_path, 'rb') as file:
-            file_hash.update(file.read())
-
-        file_name = file_hash.hexdigest()
-        analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
-        return jsonify({'success': 'Upload success', 'hash': file_name}), 200
-    else:
-        return jsonify({'error': 'Invalid file type'}), 400
     
 @app.route('/result', methods=['POST'])
 def result():
