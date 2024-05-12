@@ -11,7 +11,6 @@ from flask_cors import CORS
 
 """
 TODO
-Make the webserver send files with the correct name and extention
 Stop the display endpoint from needing the file extention in analysis_in_progress
 """
 
