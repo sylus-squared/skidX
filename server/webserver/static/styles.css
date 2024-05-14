@@ -9,11 +9,14 @@ pre {
 
 .sidebar {
     background-color: #737f8f;
-    height: 100vh; /* Full height of the viewport */
     width: 200px;
     padding: 20px;
     box-sizing: border-box;
-    float: left;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .sidebar-button {
