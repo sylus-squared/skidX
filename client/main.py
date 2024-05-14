@@ -18,3 +18,17 @@ Encrypt the verdict and send it to the server (needs to be encrypted because the
 """
 # Switched from due to the lack of openGL on the client sandbox, headlessMC will be used now 
 # Will add code for it soon
+
+import subprocess
+import signal
+import time
+
+client_process = subprocess.Popen(['java', '-jar', 'headlessmc-launcher-1.9.0.jar', '-instant'])
+
+try:
+    client_process.wait(40)  # set timeout
+except subprocess.TimeoutExpired:
+    subprocess.call(["taskkill", "/F", "/T", "/PID", str(client_process.pid)], shell = True) # This is needed because the
+    print("terminated")		           													     # openJDK platform binary wont
+                                                                                             # die when the subprocess dies
+
