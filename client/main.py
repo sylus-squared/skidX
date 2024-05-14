@@ -30,5 +30,5 @@ try:
 except subprocess.TimeoutExpired:
     subprocess.call(["taskkill", "/F", "/T", "/PID", str(client_process.pid)], shell = True) # This is needed because the
     print("terminated")		           													     # openJDK platform binary wont
-                                                                                             # die when the subprocess dies
+                                                                                             # die when the subprocess is killed
 
