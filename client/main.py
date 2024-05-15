@@ -1,6 +1,3 @@
-import requests
-import subprocess
-
 """
 This is the client to be deployed on the dirty VM used to dnamically analyze java infostealers pretending to be minecraft mods
 This uses a combination of inetsym and self written YARA rules :( to dynamically assess minecraft mods to check if they are malicious or not
@@ -16,19 +13,28 @@ Execute the downloded file with a headless minecraft instance (forge and fabric)
 Analyse the executed file with self written YARA rules
 Encrypt the verdict and send it to the server (needs to be encrypted because there is malware running on the system)
 """
-# Switched from due to the lack of openGL on the client sandbox, headlessMC will be used now 
+# Switched from portablemc due to the lack of openGL on the client sandbox, headlessMC will be used now 
 # Will add code for it soon
 
+import requests
 import subprocess
-import signal
 import time
 
-client_process = subprocess.Popen(['java', '-jar', 'headlessmc-launcher-1.9.0.jar', '-instant'])
+class TimeError(Exception):
+    pass # This error is thrown with the timeout time for the analysis is less than 40s or more than 180s (3m)
 
-try:
-    client_process.wait(40)  # set timeout
-except subprocess.TimeoutExpired:
-    subprocess.call(["taskkill", "/F", "/T", "/PID", str(client_process.pid)], shell = True) # This is needed because the
-    print("terminated")		           													     # openJDK platform binary wont
+def run_client(timeout):
+    if timeout < 40: # The time is measured in seconds
+        raise TimeError("Timeout time cannot be lower than 40s")
+    elif timeout > 180: # This validation is in case the front end validation fails 
+        raise TimeError("Timeout cannot exceed 180s (3m)")
+
+    client_process = subprocess.Popen(['java', '-jar', 'headlessmc-launcher-1.9.0.jar', '-instant'])
+
+    try:
+        client_process.wait(40)  # set timeout
+    except subprocess.TimeoutExpired:
+        subprocess.call(["taskkill", "/F", "/T", "/PID", str(client_process.pid)], shell = True) # This is needed because the
+        print("terminated")		           													     # openJDK platform binary wont
                                                                                              # die when the subprocess is killed
 
