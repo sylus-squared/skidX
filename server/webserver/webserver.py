@@ -18,6 +18,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
+ALLOWED_FILES = ['headlessmc-launcher-1.9.0.jar', 'setup.zip'] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
 with open('config/config.yml', 'r') as file:
@@ -53,22 +54,14 @@ def not_found(e):
 def favicon():
     return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/setup', methods=['GET'])
-def send_file():
-    filename = request.args.get('filename') # Get the filename and directory from request parameters
-    directory = request.args.get('directory')
-
-    if not filename or not directory:
-        abort(400, 'Both filename and directory are required.')
-
-    if not os.path.exists(directory): # Check if the directory actually exists
-        abort(404, 'Directory not found.')
-
-    file_path = os.path.join(directory, filename) # Check if the file actually exists
-    if not os.path.exists(file_path):
-        abort(404, 'File not found.')
-
-    return send_file(file_path, as_attachment=True)
+@app.route('/setup/<file>', methods=['GET']) # Used to get all necessary files for the endpoint to function without internet
+def setup(file):
+    if file in ALLOWED_FILES:
+        file_path = f'setupFiles/{file}'
+        if os.path.isfile(file_path):
+            return send_file(file_path, as_attachment=True)
+        return jsonify({'error': 'File not found'}), 404
+    return jsonify({'error': 'Access denied'}), 403
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
