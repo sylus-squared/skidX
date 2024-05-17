@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template, send_file, abort
-from werkzeug.utils import secure_filename
+from flask_cors import CORS
+from werkzeug.utils import secure_filename # This is needed to prevent potential LFI, but is it actually necessary?
 import scripts.uploadFile as uploader
 import os
 import yaml
 import scripts.uploadFile
-import zipfile
+import shutil
 import hashlib
 import re
 import socket
-from flask_cors import CORS
+
 
 """
 TODO
@@ -61,14 +62,11 @@ def setup(file): # Used to get all necessary files for the endpoint to function 
         file_path = f'setupFiles/{file}'
         if os.path.isfile(file_path):
             return send_file(file_path, as_attachment=True)
-        elif os.path.isdir(file_path):
-            zip_file_path = f'{file_path}.zip'# Zip the directory, this is needed as the zipped file exceeds gits upload limit
-            with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
-                for root, dirs, files in os.walk(file_path):
-                    for file in files:
-                        file_path = os.path.join(root, file)
-                        zip_file.write(file_path, os.path.relpath(file_path, file_path))
-            return send_file(zip_file_path, as_attachment=True, mimetype='application/zip')
+        else:
+            if os.path.exists(f"setupFiles/{file}.zip"):
+                return send_file(f"{file_path}.zip", as_attachment=True)
+            shutil.make_archive(f"setupFiles/{file}", "zip", f"setupFiles/{file}")
+            return send_file(f"{file_path}.zip", as_attachment=True)
         return jsonify({'error': 'File not found'}), 404
     return jsonify({'error': 'Access denied'}), 403
 
@@ -99,8 +97,7 @@ def upload_file():
             upload_file(app.config['UPLOAD_FOLDER'], config)
             analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
         except:
-            print("[ERROR]: Error has happened")
-
+            print("[ERROR]: Error has happened") # At some point I will add propper logging
         return jsonify({'success': 'Upload success', 'hash': file_name}), 200
     else:
         return jsonify({'error': 'Invalid file type'}), 400
