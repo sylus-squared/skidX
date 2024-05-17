@@ -4,6 +4,7 @@ import scripts.uploadFile as uploader
 import os
 import yaml
 import scripts.uploadFile
+import zipfile
 import hashlib
 import re
 import socket
@@ -18,7 +19,7 @@ app = Flask(__name__)
 CORS(app)
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
-ALLOWED_FILES = ['headlessmc-launcher-1.9.0.jar', 'setup.zip'] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
+ALLOWED_FILES = ['headlessmc-launcher-1.9.0.jar', '.minecraft', 'HeadlessMC'] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
 with open('config/config.yml', 'r') as file:
@@ -54,14 +55,23 @@ def not_found(e):
 def favicon():
     return send_from_directory('static', 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/setup/<file>', methods=['GET']) # Used to get all necessary files for the endpoint to function without internet
-def setup(file):
+@app.route('/setup/<file>', methods=['GET'])
+def setup(file): # Used to get all necessary files for the endpoint to function without internet
     if file in ALLOWED_FILES:
         file_path = f'setupFiles/{file}'
         if os.path.isfile(file_path):
             return send_file(file_path, as_attachment=True)
+        elif os.path.isdir(file_path):
+            zip_file_path = f'{file_path}.zip'# Zip the directory, this is needed as the zipped file exceeds gits upload limit
+            with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
+                for root, dirs, files in os.walk(file_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        zip_file.write(file_path, os.path.relpath(file_path, file_path))
+            return send_file(zip_file_path, as_attachment=True, mimetype='application/zip')
         return jsonify({'error': 'File not found'}), 404
     return jsonify({'error': 'Access denied'}), 403
+
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
