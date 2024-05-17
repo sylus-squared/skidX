@@ -4,3 +4,5 @@ server/webserver/__pycache__/
 server/webserver/uploads/
 server/webserver/scripts/__pycache__/
 **/__pycache__/
+server/webserver/setupFiles/.minecraft.zip
+server/webserver/setupFiles/HeadlessMC.zip
