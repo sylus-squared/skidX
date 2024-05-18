@@ -9,11 +9,12 @@
 <body>
     <div class="sidebar">
         <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
-        <button type="button" class="sidebar-button" onclick="loadPage('hello')">Hello</button>
-        <button type="button" class="sidebar-button" onclick="loadPage('hello/jane-doe')">Hello Jane</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
     </div>
     <div class="content" id="mainContent" style="text-align: center;">
         <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+        <br>
         <img src="{{ url_for('static', filename='error.gif') }}" alt="Error GIF">
         <h1>The requested file has not been analysed yet</h1>
     </div>
