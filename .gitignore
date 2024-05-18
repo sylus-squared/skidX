@@ -3,6 +3,8 @@ testing/
 server/webserver/__pycache__/
 server/webserver/uploads/
 server/webserver/scripts/__pycache__/
+server/webserver/scripts/__pycache__/uploadFile.cpython-310.pyc
+server/webserver/scripts/__pycache__/uploadFile.cpython-312.pyc
 **/__pycache__/
 server/webserver/setupFiles/.minecraft.zip
 server/webserver/setupFiles/HeadlessMC.zip
