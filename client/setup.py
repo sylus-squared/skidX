@@ -1,5 +1,5 @@
 import yaml
-import requests
+import urllib.request
 import time
 import os
 from os.path import exists
@@ -24,12 +24,12 @@ more to come
 """
 # This will be worked on as packages are needed, but for now its not necacery
 data = {
-    'connection': {
-        'serverIP': "127.0.0.1",  # Default is 127.0.0.1
-        'serverPort': 12345  # Default is 12345
+    "connection": {
+        "serverIP": "127.0.0.1",  # Default is 127.0.0.1
+        "serverPort": 12345  # Default is 12345
     },
-    'clientConfig': {
-        'idk': 'idk',
+    "clientConfig": {
+        "idk": "idk",
     }
 }
 if exists("config/config.yml"):
@@ -38,19 +38,18 @@ else:
     with open("config/config.yml", "w") as file:
         yaml.dump(data, file, default_flow_style=False)
 
-url = 'http://localhost:5000/setup'
+with open('config/config.yml', 'r') as file:
+    config = yaml.safe_load(file)
+
+serverIP = config["connection"]["serverIP"]
+
+files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft"]
+
+url = f"http://{serverIP}:5000/setup"
 filename = 'portablemc.exe'
 directory = '/setupFiles'
 
-try:
-    response = requests.get(url, params={'filename': filename, 'directory': directory})
-    if response.status_code == 200:
-        with open(filename, 'wb') as f:
-            f.write(response.content)
-        print('File downloaded successfully.')
-    else:
-        print('[ERROR]: ', response.text)
-        input("press enter to quit ")
-except:
-    print("[ERROR]: webserver most likley offline")
-    input("Press enter to quit")
+for filename in files:
+    url_to_download = url + "/" + filename
+    urllib.request.urlretrieve(url_to_download, filename)
+

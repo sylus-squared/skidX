@@ -97,7 +97,7 @@ def upload_file():
             upload_file(app.config['UPLOAD_FOLDER'], config)
             analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
         except:
-            print("[ERROR]: Error has happened") # At some point I will add propper logging
+            print("[ERROR]: Error has happened") # At some point I will add propper logging as this is stupid
         return jsonify({'success': 'Upload success', 'hash': file_name}), 200
     else:
         return jsonify({'error': 'Invalid file type'}), 400
