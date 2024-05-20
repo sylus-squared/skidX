@@ -2,6 +2,7 @@ import yaml
 import urllib.request
 import time
 import os
+import zipfile
 from os.path import exists
 
 """
@@ -35,6 +36,7 @@ data = {
 if exists("config/config.yml"):
     print("Config file already exists")
 else:
+    os.mkdir("config")
     with open("config/config.yml", "w") as file:
         yaml.dump(data, file, default_flow_style=False)
 
@@ -51,5 +53,9 @@ directory = '/setupFiles'
 
 for filename in files:
     url_to_download = url + "/" + filename
-    urllib.request.urlretrieve(url_to_download, filename)
-
+    urllib.request.urlretrieve(url_to_download, filename + ".zip")
+    try:
+        with zipfile.ZipFile(filename + ".zip", 'r') as zip_ref:
+            zip_ref.extractall(filename)
+    except:
+        pass
