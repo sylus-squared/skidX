@@ -62,7 +62,7 @@ def setup(file): # Used to get all necessary files for the endpoint to function 
         file_path = f'setupFiles/{file}'
         if os.path.isfile(file_path):
             return send_file(file_path, as_attachment=True)
-        else:
+        elif os.path.exists(file_path):
             if os.path.exists(f"setupFiles/{file}.zip"):
                 return send_file(f"{file_path}.zip", as_attachment=True)
             shutil.make_archive(f"setupFiles/{file}", "zip", f"setupFiles/{file}")
