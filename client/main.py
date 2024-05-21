@@ -14,11 +14,15 @@ Analyse the executed file with self written YARA rules
 Encrypt the verdict and send it to the server (needs to be encrypted because there is malware running on the system)
 """
 # Switched from portablemc due to the lack of openGL on the client sandbox, headlessMC will be used now 
-# Will add code for it soon
 
-import requests
 import subprocess
+import requests
+import socket
 import time
+import hashlib
+import json
+
+sample_name = ""
 
 class TimeError(Exception):
     pass # This error is thrown with the timeout time for the analysis is less than 40s or more than 180s (3m)
@@ -37,4 +41,52 @@ def run_client(timeout):
         subprocess.call(["taskkill", "/F", "/T", "/PID", str(client_process.pid)], shell = True) # This is needed because the
         print("terminated")		           													     # openJDK platform binary wont
                                                                                              # die when the subprocess is killed
+def shutdown():
+    pass
 
+def receive_file(server_socket, save_path):
+    file_name_and_extension = server_socket.recv(1024).decode() # Receive the file name and extension
+    file_name, file_extension = os.path.splitext(file_name_and_extension)
+
+    file_path = os.path.join(save_path, file_name + file_extension)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path, exist_ok=True)
+
+    with open(file_path, 'wb') as file:
+        while True:
+            data = server_socket.recv(1024)
+            if not data:
+                break
+            file.write(data)
+
+    print(f"File received and saved as {file_path}")
+
+def listen_for_sample():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((server_ip, port))
+    server_socket.listen(1)
+
+    print(f"Server listening on {server_ip}:{port}")
+
+    client_socket, client_address = server_socket.accept()
+    print(f"Connection from {client_address}")
+    file_path = 'received_file/'
+
+    receive_file(client_socket, file_path)
+
+    client_socket.close()
+    server_socket.close()
+
+def send_result(): # Used to send the result back to the results server (will be empty for the Proof Of Concept)
+    files = {'file': open(result_file, 'rb')}
+    response = requests.post("http://127.0.0.1:5000/result", files=files)
+    print(response.text)
+
+with open("config/config.json", 'r') as read_file:
+    config = json.load(read_file)
+
+server_ip = config["connection"]["serverIP"]
+port = config["connection"]["serverPort"]
+
+listen_for_sample()
+#os.rename(sample_name, os.getenv('APPDATA') + "\\.minecraft\\mods")
