@@ -3,7 +3,7 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename # This is needed to prevent potential LFI, but is it actually necessary?
 import scripts.uploadFile as uploader
 import os
-import yaml
+import json
 import scripts.uploadFile
 import shutil
 import hashlib
@@ -23,8 +23,8 @@ app.config["UPLOAD_FOLDER"] = "uploads"
 ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "config"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
-with open("config/config.yml", 'r') as file:
-    config = yaml.safe_load(file)
+with open("config/config.json", "r") as read_file:
+    config = json.load(read_file)
 
 def allowed_file(filename):        # This will be just .jar in the furture and is just for testing
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"png", "jpg", "jpeg"}
