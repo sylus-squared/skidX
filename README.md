@@ -1,7 +1,7 @@
 ![](images/logo.png)
 # skidX
-**Important note**<br/>
-*This project is currently at a very early stage and is just a proof of concept. Because of this I would not recommend using this any time soon. It will most likely be insecure and resource intensive (especially on the sandbox VM).* <br/>
+> [!WARNING]
+> *This project is currently at a very early stage and is just a proof of concept. Because of this I would not > recommend using this any time soon. It will most likely be insecure and resource intensive (especially on > > the sandbox VM).* <br/>
 # What is it? 
 skidX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft (and forge/fabric) is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
 
