@@ -3,6 +3,8 @@ import time
 import os
 import zipfile
 import json
+import random
+import ctypes
 
 """
 The config.yml file is structured as follows:
@@ -42,18 +44,31 @@ with open("config/config.json", "r") as read_file:
 
 serverIP = config["connection"]["serverIP"]
 
-files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft"]
+files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "background.png"]
+backgrounds = ["background_purple.png", "background_red.png", "background_blue.png", "background_black.png", "background_white.png"]
 
 url = f"http://{serverIP}:5000/setup"
 filename = ""
 
 for filename in files:
-    url_to_download = url + "/" + filename
-    urllib.request.urlretrieve(url_to_download, filename + ".zip")
-    try:
-        with zipfile.ZipFile(filename + ".zip", 'r') as zip_ref:
-            zip_ref.extractall(filename)
-    except:
-        pass
+    print("Downloading: " + filename)
+    if filename == "background.png":
+        background_filename = backgrounds[random.randint(0,4)]
+        url_to_download = url + "/" + background_filename
+        urllib.request.urlretrieve(url_to_download, background_filename)
+    elif filename == "headlessmc-launcher-1.9.0.jar":
+        url_to_download = url + "/" + filename
+        urllib.request.urlretrieve(url_to_download, filename)
+    else:
+        url_to_download = url + "/" + filename
+        urllib.request.urlretrieve(url_to_download, filename + ".zip")
+        try:
+            with zipfile.ZipFile(filename + ".zip", 'r') as zip_ref:
+                zip_ref.extractall(filename)
+        except:
+            pass
 
-os.rename(".minecraft", os.getenv('APPDATA') + "\\.minecraft")
+if not os.path.exists(os.getenv('APPDATA') + "\\.minecraft"):
+    os.rename(".minecraft", os.getenv('APPDATA') + "\\.minecraft")
+print(os.path.abspath(background_filename))
+ctypes.windll.user32.SystemParametersInfoW(20, 0, os.path.abspath(background_filename) , 0)

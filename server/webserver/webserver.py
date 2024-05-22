@@ -20,7 +20,8 @@ app = Flask(__name__)
 CORS(app)
 
 app.config["UPLOAD_FOLDER"] = "uploads"
-ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "config"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
+ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "config", "background_blue.png",
+ "background_red.png", "background_black.png", "background_purple.png", "background_white.png"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
 with open("config/config.json", "r") as read_file:
@@ -58,6 +59,7 @@ def favicon():
 
 @app.route("/setup/<file>", methods=["GET"])
 def setup(file): # Used to get all necessary files for the endpoint to function without internet
+    print(file)
     if file in ALLOWED_FILES:
         file_path = f"setupFiles/{file}"
         if os.path.isfile(file_path):
