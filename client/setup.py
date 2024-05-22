@@ -25,7 +25,7 @@ None, the client will operate with deafult packages only (fingers crossed)
 data = {
     "connection": {
         "serverIP": "127.0.0.1",
-        "serverPort": "12345"
+        "serverPort": 12345
     }
 }
 
