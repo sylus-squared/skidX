@@ -27,7 +27,7 @@ with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
 
 def allowed_file(filename):        # This will be just .jar in the furture and is just for testing
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"png", "jpg", "jpeg"}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"png", "jpg", "jpeg", "jar", "txt"}
 
 #---------------------------------------------------------------------------
 @app.route('/')
@@ -94,8 +94,8 @@ def upload_file():
         file_name = file_hash.hexdigest()
     
         try:
-            upload_file(app.config["UPLOAD_FOLDER"], config)
             analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
+            upload_file(app.config["UPLOAD_FOLDER"], config)
         except:
             print("[ERROR]: Error has happened") # At some point I will add propper logging as this is stupid
         return jsonify({"success": "Upload success", "hash": file_name}), 200
