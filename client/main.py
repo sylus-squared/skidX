@@ -21,6 +21,7 @@ import socket
 import time
 import hashlib
 import json
+import os
 
 sample_name = ""
 
@@ -45,6 +46,7 @@ def shutdown():
     pass
 
 def receive_file(server_socket, save_path):
+    global sample_name
     file_name_and_extension = server_socket.recv(1024).decode() # Receive the file name and extension
     file_name, file_extension = os.path.splitext(file_name_and_extension)
 
@@ -60,6 +62,7 @@ def receive_file(server_socket, save_path):
             file.write(data)
 
     print(f"File received and saved as {file_path}")
+    sample_name = file_name + file_extension
 
 def listen_for_sample():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -70,7 +73,7 @@ def listen_for_sample():
 
     client_socket, client_address = server_socket.accept()
     print(f"Connection from {client_address}")
-    file_path = 'received_file/'
+    file_path = "received_file/"
 
     receive_file(client_socket, file_path)
 
@@ -89,4 +92,6 @@ server_ip = config["connection"]["serverIP"]
 port = config["connection"]["serverPort"]
 
 listen_for_sample()
-#os.rename(sample_name, os.getenv('APPDATA') + "\\.minecraft\\mods")
+destination_dir = os.path.join(os.getenv('APPDATA'), ".minecraft", "mods")
+destination_path = os.path.join(destination_dir, sample_name)
+os.rename(os.path.join("received_file", sample_name), destination_path)
