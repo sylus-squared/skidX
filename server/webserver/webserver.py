@@ -28,7 +28,7 @@ with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
 
 def allowed_file(filename):        # This will be just .jar in the furture and is just for testing
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"png", "jpg", "jpeg", "jar", "txt"}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 
 #---------------------------------------------------------------------------
 @app.route('/')
