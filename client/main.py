@@ -66,10 +66,10 @@ def receive_file(server_socket, save_path):
 
 def listen_for_sample():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((server_ip, port))
+    server_socket.bind((client_ip, port))
     server_socket.listen(1)
 
-    print(f"Server listening on {server_ip}:{port}")
+    print(f"Server listening on {client_ip}:{port}")
 
     client_socket, client_address = server_socket.accept()
     print(f"Connection from {client_address}")
@@ -88,7 +88,7 @@ def send_result(): # Used to send the result back to the results server (will be
 with open("config/config.json", 'r') as read_file:
     config = json.load(read_file)
 
-server_ip = config["connection"]["serverIP"]
+client_ip = config["connection"]["clientIP"]
 port = config["connection"]["serverPort"]
 
 listen_for_sample()

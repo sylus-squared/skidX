@@ -7,13 +7,6 @@ import random
 import ctypes
 
 """
-The config.yml file is structured as follows:
-connection:
-    serverIP: <serverIP> # Deafult is 127.0.0.1
-    serverPort: 12345 # Deafult is 8080
-clientConfig:
-    IDK yet
-
 An interface IP is not needed here as its assumed the client only has one interface although I might add
 it in the furture if needed
 
@@ -25,6 +18,7 @@ None, the client will operate with deafult packages only (fingers crossed)
 """
 
 input_ip = input("Enter the IP of the analysis server: ")
+client_input_ip = input("Enter the IP of the client server (this server): ")
 try:
     input_port = int(input("Enter the port of the analysis server: "))
     if input_port < 1 or input_port > 65535:
@@ -37,6 +31,7 @@ except:
 data = {
     "connection": {
         "serverIP": input_ip,
+        "clientIP": client_input_ip,
         "serverPort": input_port
     }
 }
