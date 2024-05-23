@@ -24,10 +24,20 @@ List of packages:
 None, the client will operate with deafult packages only (fingers crossed)
 """
 
+input_ip = input("Enter the IP of the analysis server: ")
+try:
+    input_port = int(input("Enter the port of the analysis server: "))
+    if input_port < 1 or input_port > 65535:
+        print("Invalid port number >:(")
+        quit()
+except:
+    print("The port must be a number >:(")
+    quit()
+
 data = {
     "connection": {
-        "serverIP": "127.0.0.1",
-        "serverPort": 12345
+        "serverIP": input_ip,
+        "serverPort": input_port
     }
 }
 
@@ -70,5 +80,5 @@ for filename in files:
 
 if not os.path.exists(os.getenv('APPDATA') + "\\.minecraft"):
     os.rename(".minecraft", os.getenv('APPDATA') + "\\.minecraft")
-print(os.path.abspath(background_filename))
-ctypes.windll.user32.SystemParametersInfoW(20, 0, os.path.abspath(background_filename) , 0)
+if os.path.exists(os.path.abspath(background_filename)):
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, os.path.abspath(background_filename) , 0)
