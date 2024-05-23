@@ -17,6 +17,8 @@ skidX currently uses a modified version of headlessmc, its a brilliant project g
 # Roadmap 
 ### Proof of concept 
 Flask webserver for uploading files for analysis and viewing the results <br/>
+Support for both forge and fabric mods<br/>
+Complete offline VM setup (Still testing, might not happen)<br/>
 Client for the sandbox VM to detonate the malware <br/>
 Highlighting of potential C2's in the results <br/>
 Headless client for the sandbox VM <br/>
