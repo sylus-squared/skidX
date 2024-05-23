@@ -1,4 +1,4 @@
-![](images/logo.png)
+![](images/purple_text_logo_NB.png)
 # skidX
 > [!WARNING]
 > *This project is currently at a very early stage and is just a proof of concept. Because of this I would not recommend using this any time soon. It will most likely be insecure and resource intensive (especially on the sandbox VM).* <br/>
