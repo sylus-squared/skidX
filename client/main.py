@@ -24,6 +24,7 @@ import json
 import os
 
 sample_name = ""
+analysis_time = 0
 
 class TimeError(Exception):
     pass # This error is thrown with the timeout time for the analysis is less than 40s or more than 180s (3m)
@@ -41,14 +42,17 @@ def run_client(timeout):
     except subprocess.TimeoutExpired:
         subprocess.call(["taskkill", "/F", "/T", "/PID", str(client_process.pid)], shell = True) # This is needed because the
         print("terminated")		           													     # openJDK platform binary wont
-                                                                                             # die when the subprocess is killed
+                                                                                                 # die when the subprocess is killed
 def shutdown():
     pass
 
 def receive_file(server_socket, save_path):
     global sample_name
+    global analysis_time
     file_name_and_extension = server_socket.recv(1024).decode() # Receive the file name and extension
     file_name, file_extension = os.path.splitext(file_name_and_extension)
+
+    analysis_time = server_socket.recv(1024).decode()
 
     file_path = os.path.join(save_path, file_name + file_extension)
     if not os.path.exists(save_path):
@@ -95,3 +99,6 @@ listen_for_sample()
 destination_dir = os.path.join(os.getenv('APPDATA'), ".minecraft", "mods")
 destination_path = os.path.join(destination_dir, sample_name)
 os.rename(os.path.join("received_file", sample_name), destination_path)
+# This is just so I don't infect my PC by accident while testing and will be removed soon
+input("WARNING, this could potentially detonate actual malware, are you sure you want to continue?(press enter to continue): ")
+run_client(analysis_time)

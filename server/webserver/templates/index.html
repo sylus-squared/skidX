@@ -18,6 +18,10 @@
         <p>It will be very buggy</p>
 
         <form id="uploadForm">
+            <label for="analysisInputBox">Analysis time(seconds):</label>
+            <input type="text" id="analysisInputBox" name="analysisInputBox" value="80" required>
+            <br/>
+            <br/>
             <input type="file" id="fileInput" name="fileInput" accept=".jar">
             <button type="button" onclick="confirmUpload()">Confirm Upload</button>
         </form>
@@ -31,7 +35,9 @@
 
         function confirmUpload() {
             var fileInput = document.getElementById('fileInput');
+            var analysisInputBox = document.getElementById('analysisInputBox');
             var file = fileInput.files[0];
+            var analysisTime = analysisInputBox.value;
 
             if (file) {
                 var reader = new FileReader();
@@ -39,6 +45,7 @@
                 reader.onload = async function(event) {
                     var formData = new FormData();
                     formData.append('fileInput', file);
+                    formData.append('analysisTime', analysisTime);
 
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', 'http://localhost:5000/upload', true);
@@ -49,7 +56,9 @@
                             var hash = response.hash;
                             loadPage('display/' + hash);
                         } else {
-                            alert('Error uploading file. Please try again.');
+                            var response = JSON.parse(xhr.responseText);
+                            var error = response.error;
+                            alert(error);
                         }
                     };
 
@@ -61,14 +70,6 @@
                 alert('Please select a file to upload.');
             }
         }
-
-        function loadPage(route) {
-            console.log("Navigating to: " + route);
-            window.location.href = "/" + route;
-            return false;
-        }
-
-
     </script>
 </body>
 </html>
