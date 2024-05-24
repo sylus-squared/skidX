@@ -52,7 +52,7 @@ def receive_file(server_socket, save_path):
     file_name_and_extension = server_socket.recv(1024).decode() # Receive the file name and extension
     file_name, file_extension = os.path.splitext(file_name_and_extension)
 
-    analysis_time = server_socket.recv(1024).decode()
+    analysis_time = int(server_socket.recv(1024).decode())
 
     file_path = os.path.join(save_path, file_name + file_extension)
     if not os.path.exists(save_path):
