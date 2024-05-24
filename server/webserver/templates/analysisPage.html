@@ -48,7 +48,7 @@
 
         var fileContent = '{{ file_content }}';
         if (fileContent === "None") {
-            setInterval(checkFileStatus, 10000); // 10 seconds
+            setInterval(checkFileStatus, 30000); // 30 seconds
         } else {
             clearInterval();
         }
