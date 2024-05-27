@@ -87,12 +87,6 @@ def upload_file():
         filename = secure_filename(file.filename)
         new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
         file.save(os.path.join(app.config["UPLOAD_FOLDER"], new_filename))
-
-        try:
-            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, request.form.get("analysisTime"))
-        except ConnectionRefusedError:
-            print("Client refused the connection, is it online?")
-            return jsonify({"error": "File upload failed, is the analysis server online?"}), 500
         
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], new_filename)
         file_hash = hashlib.sha256()
@@ -100,6 +94,15 @@ def upload_file():
         with open(file_path, "rb") as file:
             file_hash.update(file.read())
         file_name = file_hash.hexdigest()
+
+        if file_name + ".txt" in analysis_in_progress or os.path.exists(f"data/{file_name}"):
+            return jsonify({"error": "File has already been analysed"}), 409
+
+        try:
+            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, request.form.get("analysisTime"))
+        except ConnectionRefusedError:
+            print("Client refused the connection, is it online?")
+            return jsonify({"error": "File upload failed, is the analysis server online?"}), 500
     
         analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
         return jsonify({"success": "Upload success", "hash": file_name}), 200
