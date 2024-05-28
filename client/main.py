@@ -95,10 +95,11 @@ with open("config/config.json", 'r') as read_file:
 client_ip = config["connection"]["clientIP"]
 port = config["connection"]["serverPort"]
 
-listen_for_sample()
-destination_dir = os.path.join(os.getenv('APPDATA'), ".minecraft", "mods")
-destination_path = os.path.join(destination_dir, sample_name)
-os.rename(os.path.join("received_file", sample_name), destination_path)
-# This is just so I don't infect my PC by accident while testing and will be removed soon
-input("WARNING, this could potentially detonate actual malware, are you sure you want to continue?(press enter to continue): ")
-run_client(analysis_time)
+while True:
+    listen_for_sample()
+    destination_dir = os.path.join(os.getenv('APPDATA'), ".minecraft", "mods")
+    destination_path = os.path.join(destination_dir, sample_name)
+    os.rename(os.path.join("received_file", sample_name), destination_path)
+    # This is just so I don't infect my PC by accident while testing and will be removed soon
+    input("WARNING, this could potentially detonate actual malware, are you sure you want to continue?(press enter to continue): ")
+    run_client(analysis_time)
