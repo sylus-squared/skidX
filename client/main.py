@@ -84,8 +84,8 @@ def listen_for_sample():
     client_socket.close()
     server_socket.close()
 
-def send_result(): # Used to send the result back to the results server (will be empty for the Proof Of Concept)
-    files = {'file': open(result_file, 'rb')}
+def send_result(results): # Used to send the result back to the results server (will be empty for the Proof Of Concept)
+    files = {results}
     response = requests.post("http://127.0.0.1:5000/result", files=files)
     print(response.text)
 
@@ -103,3 +103,4 @@ while True:
     # This is just so I don't infect my PC by accident while testing and will be removed soon
     input("WARNING, this could potentially detonate actual malware, are you sure you want to continue?(press enter to continue): ")
     run_client(analysis_time)
+    send_result("Coming soon")
