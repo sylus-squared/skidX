@@ -18,6 +18,8 @@ def run_inetsim(timeout, file_hash):
         process.send_signal(signal.SIGINT)
         print("terminated")
 
+    get_report(file_hash)
+
 def get_report(file_hash):
     if not os.path.exists(f"analysis/{file_hash}"):
         print("Analysis has not been completed yet")

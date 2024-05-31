@@ -5,6 +5,7 @@ import scripts.uploadFile as uploader
 import os
 import json
 import scripts.uploadFile
+import inetsim.run_inetsim
 import shutil
 import hashlib
 import re
@@ -85,6 +86,8 @@ def upload_file():
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
+        analysis_time = request.form.get("analysisTime")
+
         new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
         file.save(os.path.join(app.config["UPLOAD_FOLDER"], new_filename))
         
@@ -99,12 +102,13 @@ def upload_file():
             return jsonify({"error": "File has already been analysed"}), 409
 
         try:
-            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, request.form.get("analysisTime"))
+            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time + 10) # The +10 is to make sure the client does not try and sent the report while inetsim is running
         except ConnectionRefusedError:
             print("Client refused the connection, is it online?")
             return jsonify({"error": "File upload failed, is the analysis server online?"}), 500
     
         analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
+        run_inetsim(file_name)
         return jsonify({"success": "Upload success", "hash": file_name}), 200
     else:
         return jsonify({"error": "Invalid file type"}), 400
