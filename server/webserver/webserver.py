@@ -86,7 +86,10 @@ def upload_file():
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        analysis_time = request.form.get("analysisTime")
+        analysis_time = int(request.form.get("analysisTime"))
+
+        if analysis_time < 40 or analysis_time > 180:
+            return jsonify({"error": "Analysis time must be between 40s and 180s"}), 406
 
         new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
         file.save(os.path.join(app.config["UPLOAD_FOLDER"], new_filename))
