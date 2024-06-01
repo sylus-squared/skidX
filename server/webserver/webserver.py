@@ -5,7 +5,7 @@ import scripts.uploadFile as uploader
 import os
 import json
 import scripts.uploadFile
-import inetsim.run_inetsim
+import scripts.inetsim
 import shutil
 import hashlib
 import re
@@ -88,7 +88,7 @@ def upload_file():
         filename = secure_filename(file.filename)
         analysis_time = int(request.form.get("analysisTime"))
 
-        if analysis_time < 40 or analysis_time > 180:
+        if analysis_time < 40 or analysis_time > 180: # Seconds
             return jsonify({"error": "Analysis time must be between 40s and 180s"}), 406
 
         new_filename = f"{os.path.splitext(filename)[0]}_upload{os.path.splitext(filename)[1]}"
@@ -97,6 +97,7 @@ def upload_file():
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], new_filename)
         file_hash = hashlib.sha256()
         
+
         with open(file_path, "rb") as file:
             file_hash.update(file.read())
         file_name = file_hash.hexdigest()
