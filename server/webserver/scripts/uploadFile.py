@@ -30,8 +30,8 @@ def send_file(file_path, server_address, server_port, interfaces_ip, analysis_ti
     client_socket.close()
 
 def upload_file(file_path, config, analysis_time):
-    interface_ip = config["connection"]["interfaceip"]
-    server_ip = config["connection"]["clientIP"]
+    interface_ip = config["connection"]["interface_IP"]
+    server_ip = config["connection"]["client_IP"]
     server_port = config["connection"]["port"]
     
     send_file(file_path, server_ip, server_port, interface_ip, analysis_time)
