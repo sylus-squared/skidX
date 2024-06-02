@@ -3,8 +3,8 @@ This is the machineary file for proxmox that allows the server to take snapshots
 an anlysis has been completed. Although this might not be necacery as most minecraft malware leaves no trace
 on the system, it is included as a precaution
 
-The username and password are stored as enviroment variables (to avoid having to store them in the config file), create said enviroment variables with the
-commands:
+The username and password are stored as enviroment variables (to avoid having to store them in the config file)
+Create said enviroment variables with the commands:
 export PROXMOX_USERNAME="your_username"
 export PROXMOX_PASSWORD="your_password"
 I might replace this with a secrets file you have to provide a password on the webserver to access as its still not secure
@@ -32,6 +32,19 @@ def get_ticket(): # Gets a ticket and CSRF token
         print(f"Error getting ticket: {response.text}")
         return None, None
 
+def get_snapshot_list(vm_id, ticket, csrf_token):
+    url = f"https://{proxmox_IP}:8006/api2/json/nodes/localhost/qemu/{vm_id}/snapshot"
+    headers = {
+        "Cookie": f"PVEAuthCookie={ticket}",
+        "CSRFPreventionToken": csrf_token
+    }
+    response = requests.get(url, headers=headers, verify=False)
+    if response.status_code == 200:
+        return response.json()["data"]
+    else:
+        print(f"Error getting snapshot list for VM {vm_id}: {response.text}")
+        return []
+
 def create_snapshot(vm_id, ticket, csrf_token):
     url = f"https://{proxmox_IP}:8006/api2/json/nodes/localhost/qemu/{vm_id}/snapshot"
     data = {"snapname": snapshot_name}
@@ -58,5 +71,9 @@ def revert_to_snapshot(vm_id, ticket, csrf_token):
         print(f"Error reverting VM {vm_id} to snapshot {snapshot_name}: {response.text}")
 
 ticket, csrf_token = get_ticket()
-create_snapshot(vm_id, ticket, csrf_token)
+snapshot_list = get_snapshot_list(vm_id, ticket, csrf_token)
+if any(snapshot["snapname"] == snapshot_name for snapshot in snapshot_list):
+        print(f"Snapshot {snapshot_name} already exists for VM {vm_id}")
+else:
+    create_snapshot(vm_id, ticket, csrf_token)
 revert_to_snapshot(vm_id, ticket, csrf_token)
