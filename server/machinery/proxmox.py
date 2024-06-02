@@ -11,6 +11,7 @@ I might replace this with a secrets file you have to provide a password on the w
 """
 import json
 import requests
+import os
 
 with open("../webserver/config/config.json", "r") as read_file:
     config = json.load(read_file)
@@ -21,15 +22,17 @@ password = os.environ["PROXMOX_PASSWORD"]
 vm_id = config["machinery"]["vm_id"]
 snapshot_name = config["machinery"]["snapshot_name"]
 
-def get_ticket(): # Gets a ticket and CSRF token
+def get_ticket():
     url = f"https://{proxmox_IP}:8006/api2/json/access/ticket"
     data = {"username": username, "password": password}
-    response = requests.post(url, data=data, verify=False)
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    response = requests.post(url, data=data, headers=headers, verify=False)
     if response.status_code == 200:
         ticket_data = response.json()["data"]
         return ticket_data["ticket"], ticket_data["CSRFPreventionToken"]
     else:
-        print(f"Error getting ticket: {response.text}")
+        print(f"Error getting ticket: {response.status_code} - {response.reason}")
+        print(response.text)
         return None, None
 
 def get_snapshot_list(vm_id, ticket, csrf_token):
@@ -71,9 +74,24 @@ def revert_to_snapshot(vm_id, ticket, csrf_token):
         print(f"Error reverting VM {vm_id} to snapshot {snapshot_name}: {response.text}")
 
 ticket, csrf_token = get_ticket()
+
+if ticket == None or csrf_token == None:
+    print("[CRITICAL ERROR]: Token is NULL and the program cannot continue")
+    quit()
+
 snapshot_list = get_snapshot_list(vm_id, ticket, csrf_token)
-if any(snapshot["snapname"] == snapshot_name for snapshot in snapshot_list):
-        print(f"Snapshot {snapshot_name} already exists for VM {vm_id}")
-else:
+snapshot_created = False
+
+for i in snapshot_list: # For some unknown reason, python refuses to allow me to just do i["name"], it just gives me a key error, but this works fine for no reason
+    for key, value in i.items():
+        print(value)
+        print(snapshot_name)
+        if value == snapshot_name:
+            snapshot_created = True
+
+print(snapshot_created)
+if snapshot_created == False:
+    print("creating snapshot")
     create_snapshot(vm_id, ticket, csrf_token)
+
 revert_to_snapshot(vm_id, ticket, csrf_token)
