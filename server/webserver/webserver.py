@@ -4,13 +4,15 @@ from werkzeug.utils import secure_filename # This is needed to prevent potential
 import scripts.uploadFile as uploader
 import os
 import json
+import sys
 import scripts.uploadFile
 import scripts.inetsim
+sys.path.insert(0, os.path.abspath('../machinery')) # I hate that I have to do this
+from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
 import shutil
 import hashlib
 import re
 import socket
-
 
 """
 TODO
@@ -24,6 +26,8 @@ app.config["UPLOAD_FOLDER"] = "uploads"
 ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "config", "background_blue.png",
  "background_red.png", "background_black.png", "background_purple.png", "background_white.png"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
+
+sys.path.insert(0, os.path.abspath("server/machinery"))
 
 with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
