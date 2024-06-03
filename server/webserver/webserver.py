@@ -32,6 +32,24 @@ sys.path.insert(0, os.path.abspath("server/machinery"))
 with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
 
+ticket, csrf_token = get_ticket()
+
+if ticket == None or csrf_token == None:
+    print("[CRITICAL ERROR]: Token is NULL and the program cannot continue")
+    quit()
+
+snapshot_list = get_snapshot_list(vm_id, ticket, csrf_token)
+snapshot_created = False
+
+for i in snapshot_list: # For some unknown reason, python refuses to allow me to just do i["name"], it just gives me a key error, but this works fine for no reason
+    for key, value in i.items():
+        if value == snapshot_name:
+            snapshot_created = True
+
+if snapshot_created == False:
+    print("creating snapshot")
+    create_snapshot(vm_id, ticket, csrf_token)
+
 def allowed_file(filename):        # This will be just .jar in the furture and is just for testing
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 

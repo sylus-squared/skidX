@@ -72,21 +72,3 @@ def revert_to_snapshot(vm_id, ticket, csrf_token):
         print(f"VM {vm_id} reverted to snapshot {snapshot_name}")
     else:
         print(f"Error reverting VM {vm_id} to snapshot {snapshot_name}: {response.text}")
-
-ticket, csrf_token = get_ticket()
-
-if ticket == None or csrf_token == None:
-    print("[CRITICAL ERROR]: Token is NULL and the program cannot continue")
-    quit()
-
-snapshot_list = get_snapshot_list(vm_id, ticket, csrf_token)
-snapshot_created = False
-
-for i in snapshot_list: # For some unknown reason, python refuses to allow me to just do i["name"], it just gives me a key error, but this works fine for no reason
-    for key, value in i.items():
-        if value == snapshot_name:
-            snapshot_created = True
-
-if snapshot_created == False:
-    print("creating snapshot")
-    create_snapshot(vm_id, ticket, csrf_token)
