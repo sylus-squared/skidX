@@ -22,6 +22,15 @@ Stop the display endpoint from needing the file extention in analysis_in_progres
 app = Flask(__name__)
 CORS(app)
 
+print("""
+     _    _     ___  __
+ ___| | _(_) __| \ \/ /
+/ __| |/ / |/ _` |\  / 
+\__ \   <| | (_| |/  \ 
+|___/_|\_\_|\__,_/_/\_\
+                       
+""")
+
 app.config["UPLOAD_FOLDER"] = "uploads"
 ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "config", "background_blue.png",
  "background_red.png", "background_black.png", "background_purple.png", "background_white.png"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
@@ -38,6 +47,8 @@ if ticket == None or csrf_token == None:
     print("[CRITICAL ERROR]: Token is NULL and the program cannot continue")
     quit()
 
+vm_id = config["machinery"]["vm_id"]
+snapshot_name = config["machinery"]["snapshot_name"]
 snapshot_list = get_snapshot_list(vm_id, ticket, csrf_token)
 snapshot_created = False
 
