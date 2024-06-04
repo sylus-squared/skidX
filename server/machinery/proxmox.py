@@ -19,8 +19,6 @@ with open("../webserver/config/config.json", "r") as read_file:
 proxmox_IP = config["machinery"]["proxmox_IP"]
 username = os.environ["PROXMOX_USERNAME"]
 password = os.environ["PROXMOX_PASSWORD"]
-vm_id = config["machinery"]["vm_id"]
-snapshot_name = config["machinery"]["snapshot_name"]
 
 def get_ticket():
     url = f"https://{proxmox_IP}:8006/api2/json/access/ticket"
