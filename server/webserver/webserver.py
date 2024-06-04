@@ -14,11 +14,6 @@ import hashlib
 import re
 import socket
 
-"""
-TODO
-Stop the display endpoint from needing the file extention in analysis_in_progress
-"""
-
 app = Flask(__name__)
 CORS(app)
 
@@ -106,7 +101,6 @@ def setup(file): # Used to get all necessary files for the endpoint to function 
         return jsonify({"error": "File not found"}), 404
     return jsonify({"error": "Access denied"}), 403
 
-
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "fileInput" not in request.files:
@@ -130,7 +124,6 @@ def upload_file():
         file_path = os.path.join(app.config["UPLOAD_FOLDER"], new_filename)
         file_hash = hashlib.sha256()
         
-
         with open(file_path, "rb") as file:
             file_hash.update(file.read())
         file_name = file_hash.hexdigest()
@@ -139,13 +132,13 @@ def upload_file():
             return jsonify({"error": "File has already been analysed"}), 409
 
         try:
-            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time + 10) # The +10 is to make sure the client does not try and sent the report while inetsim is running
+            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
         except ConnectionRefusedError:
             print("Client refused the connection, is it online?")
             return jsonify({"error": "File upload failed, is the analysis server online?"}), 500
     
         analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
-        run_inetsim(file_name)
+        run_inetsim(analysis_time - 10, file_name) # The - 10 is to ensure that inetsim stops before the client sends the report
         return jsonify({"success": "Upload success", "hash": file_name}), 200
     else:
         return jsonify({"error": "Invalid file type"}), 400
@@ -188,7 +181,6 @@ def check_file_status(file):
 
     return jsonify({"fileExists": file_exists, "fileContent": file_content})
 
-    
 @app.route("/result", methods=["POST"])
 def result():
     if "file" not in request.files:

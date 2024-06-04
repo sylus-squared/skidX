@@ -32,7 +32,7 @@ class TimeError(Exception):
 def run_client(timeout):
     if timeout < 40: # The time is measured in seconds
         raise TimeError("Timeout time cannot be lower than 40s")
-    elif timeout > 190: # This validation is in case the front end validation fails 
+    elif timeout > 180: # This validation is in case the front end validation fails 
         raise TimeError("Timeout cannot exceed 180s (3m)")
 
     client_process = subprocess.Popen(['java', '-jar', 'headlessmc-launcher-1.9.0.jar', '-instant'])
