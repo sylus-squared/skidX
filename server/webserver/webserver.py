@@ -61,7 +61,7 @@ if snapshot_created == False:
     print("creating snapshot")
     create_snapshot(vm_id, ticket, csrf_token)
 
-def allowed_file(filename):        # This will be just .jar in the furture and is just for testing
+def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 
 #---------------------------------------------------------------------------
