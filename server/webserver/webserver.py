@@ -6,7 +6,7 @@ import sys
 import scripts.uploadFile
 import scripts.inetsim
 sys.path.insert(0, os.path.abspath('../machinery')) # I hate that I have to do this
-from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
+#from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
 import shutil
 import hashlib
 import logging
@@ -29,9 +29,22 @@ ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "c
  "background_red.png", "background_black.png", "background_purple.png", "background_white.png"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
-logging.basicConfig(filename="app.log", filemode='w', format='%(name)s - [%(levelname)s]- %(message)s')
+# Setup propper logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
-sys.path.insert(0, os.path.abspath("server/machinery"))
+file_handler = logging.FileHandler("app.log")
+file_handler.setLevel(logging.DEBUG)
+
+stream_handler = logging.StreamHandler() # Create a stream handler for printing to the terminal
+stream_handler.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter('%(name)s - [%(levelname)s]- %(message)s')
+file_handler.setFormatter(formatter)
+stream_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)  # Add both handlers to the logger
+logger.addHandler(stream_handler)
 
 if not os.path.exists("config/config.json"):
     logging.critical("Config file does not exist and the program cannot continue")
@@ -45,7 +58,7 @@ if config == []:
     quit()
 
 logging.info("Loaded config file")
-
+"""
 ticket, csrf_token = get_ticket()
 
 if ticket == None or csrf_token == None:
@@ -65,7 +78,7 @@ for i in snapshot_list: # For some unknown reason, python refuses to allow me to
 if snapshot_created == False:
     print("creating snapshot")
     create_snapshot(vm_id, ticket, csrf_token)
-
+"""
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 
