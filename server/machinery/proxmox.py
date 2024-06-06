@@ -3,10 +3,7 @@ This is the machineary file for proxmox that allows the server to take snapshots
 an anlysis has been completed. Although this might not be necacery as most minecraft malware leaves no trace
 on the system, it is included as a precaution
 
-The username and password are stored as enviroment variables (to avoid having to store them in the config file)
-Create said enviroment variables with the commands:
-export PROXMOX_USERNAME="your_username"
-export PROXMOX_PASSWORD="your_password"
+The username and password are stored in a seperate credentials file (to avoid having to store them in the config file)
 I might replace this with a secrets file you have to provide a password on the webserver to access as its still not secure
 """
 import json
@@ -17,8 +14,15 @@ with open("../webserver/config/config.json", "r") as read_file:
     config = json.load(read_file)
 
 proxmox_IP = config["machinery"]["proxmox_IP"]
-username = os.environ["PROXMOX_USERNAME"]
-password = os.environ["PROXMOX_PASSWORD"]
+
+with open("creds.txt", 'r') as file:
+    lines = file.readlines()
+
+for line in lines:
+    if "username" in line:
+        username = line.split('=')[1].strip()
+    elif "password" in line:
+        password = line.split('=')[1].strip()
 
 def get_ticket():
     url = f"https://{proxmox_IP}:8006/api2/json/access/ticket"

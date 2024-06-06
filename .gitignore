@@ -8,3 +8,5 @@ server/webserver/scripts/__pycache__/uploadFile.cpython-312.pyc
 **/__pycache__/
 server/webserver/setupFiles/.minecraft.zip
 server/webserver/setupFiles/HeadlessMC.zip
+server/machinery/creds.txt
+server/webserver/app.log
