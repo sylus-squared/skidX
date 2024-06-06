@@ -6,7 +6,7 @@ import sys
 import scripts.uploadFile
 import scripts.inetsim
 sys.path.insert(0, os.path.abspath('../machinery')) # I hate that I have to do this
-#from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
+from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
 import shutil
 import hashlib
 import logging
@@ -58,7 +58,7 @@ if config == []:
     quit()
 
 logging.info("Loaded config file")
-"""
+
 ticket, csrf_token = get_ticket()
 
 if ticket == None or csrf_token == None:
@@ -78,7 +78,7 @@ for i in snapshot_list: # For some unknown reason, python refuses to allow me to
 if snapshot_created == False:
     print("creating snapshot")
     create_snapshot(vm_id, ticket, csrf_token)
-"""
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 
@@ -200,7 +200,7 @@ def check_file_status(file):
     file_exists = os.path.exists(file_path)
     file_content = ""
     if file_exists:
-        try:
+        try: # This is not used, remove it at some point
             with open(file_path, 'r') as file:
                 file_content = file.read()
         except FileNotFoundError:
