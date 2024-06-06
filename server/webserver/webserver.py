@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify, send_from_directory, render_template, send_file, abort
 from flask_cors import CORS
-from werkzeug.utils import secure_filename # This is needed to prevent potential LFI, but is it actually necessary?
-import scripts.uploadFile as uploader
 import os
 import json
 import sys
@@ -11,8 +9,8 @@ sys.path.insert(0, os.path.abspath('../machinery')) # I hate that I have to do t
 from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
 import shutil
 import hashlib
+import logging
 import re
-import socket
 
 app = Flask(__name__)
 CORS(app)
@@ -31,15 +29,27 @@ ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "c
  "background_red.png", "background_black.png", "background_purple.png", "background_white.png"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
+logging.basicConfig(filename="app.log", filemode='w', format='%(name)s - [%(levelname)s]- %(message)s')
+
 sys.path.insert(0, os.path.abspath("server/machinery"))
+
+if not os.path.exists("config/config.json"):
+    logging.critical("Config file does not exist and the program cannot continue")
+    quit()
 
 with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
 
+if config == []:
+    logging.critical("Log file is empty")
+    quit()
+
+logging.info("Loaded config file")
+
 ticket, csrf_token = get_ticket()
 
 if ticket == None or csrf_token == None:
-    print("[CRITICAL ERROR]: Token is NULL and the program cannot continue")
+    logging.critical("Ticket or csrf token is null and the program cannot continue")
     quit()
 
 vm_id = config["machinery"]["vm_id"]
@@ -98,7 +108,9 @@ def setup(file): # Used to get all necessary files for the endpoint to function 
                 return send_file(f"{file_path}.zip", as_attachment=True)
             shutil.make_archive(f"setupFiles/{file}", "zip", f"setupFiles/{file}")
             return send_file(f"{file_path}.zip", as_attachment=True)
+            logging.warning("Client tried to access a file that does not exist")
         return jsonify({"error": "File not found"}), 404
+    logging.warning("Client tried to access a file that is not allowed")
     return jsonify({"error": "Access denied"}), 403
 
 @app.route("/upload", methods=["POST"])
@@ -112,7 +124,7 @@ def upload_file():
         return jsonify({"error": "No selected file"}), 400
 
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
+        filename = file.filename
         analysis_time = int(request.form.get("analysisTime"))
 
         if analysis_time < 40 or analysis_time > 180: # Seconds
@@ -132,15 +144,17 @@ def upload_file():
             return jsonify({"error": "File has already been analysed"}), 409
 
         try:
-            uploader.upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
+            upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
         except ConnectionRefusedError:
-            print("Client refused the connection, is it online?")
+            logging.critical("File upload failed, is the analysis server online?")
             return jsonify({"error": "File upload failed, is the analysis server online?"}), 500
     
         analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
         run_inetsim(analysis_time - 10, file_name) # The - 10 is to ensure that inetsim stops before the client sends the report
+        logging.info("Succesfully sent a file")
         return jsonify({"success": "Upload success", "hash": file_name}), 200
     else:
+        logging.warning("Client tried to upload a file with a disalowed file type")
         return jsonify({"error": "Invalid file type"}), 400
 
 @app.route("/display/<file>")
@@ -201,4 +215,8 @@ def result():
 if __name__ == "__main__":
     if not os.path.exists(app.config["UPLOAD_FOLDER"]):
         os.makedirs(app.config["UPLOAD_FOLDER"])
+    
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+    logging.info("Webserver started")
     app.run(debug=False)
