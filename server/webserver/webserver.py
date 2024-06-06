@@ -198,15 +198,7 @@ def check_file_status(file):
     file_path = os.path.join(data_dir, file + ".txt")
     
     file_exists = os.path.exists(file_path)
-    file_content = ""
-    if file_exists:
-        try: # This is not used, remove it at some point
-            with open(file_path, 'r') as file:
-                file_content = file.read()
-        except FileNotFoundError:
-            pass
-
-    return jsonify({"fileExists": file_exists, "fileContent": file_content})
+    return jsonify({"fileExists": file_exists})
 
 @app.route("/result", methods=["POST"])
 def result():
