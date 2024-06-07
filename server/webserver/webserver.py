@@ -164,7 +164,7 @@ def upload_file():
     
         analysis_in_progress.append(file_name + ".txt") # The display endpoint needs the extension to work, change this at some point
         run_inetsim(analysis_time - 10, file_name) # The - 10 is to ensure that inetsim stops before the client sends the report
-        logging.info("Succesfully sent a file")
+        logging.info("Sent a file with the hash: " + file_name)
         return jsonify({"success": "Upload success", "hash": file_name}), 200
     else:
         logging.warning("Client tried to upload a file with a disalowed file type")

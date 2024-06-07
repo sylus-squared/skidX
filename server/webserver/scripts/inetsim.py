@@ -16,7 +16,7 @@ def run_inetsim(timeout, file_hash):
         process.wait(40)  # set timeout
     except subprocess.TimeoutExpired:
         process.send_signal(signal.SIGINT)
-        print("terminated")
+        print("terminated inetsim")
 
     get_report(file_hash)
 
@@ -36,4 +36,3 @@ def get_report(file_hash):
         shutil.copy(source_dir, dest_dir)
     except FileNotFoundError:
         print("File does not exist")
-    os.rename(dest_dir + file[0], dest_dir + file_hash + ".txt")
