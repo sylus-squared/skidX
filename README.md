@@ -19,7 +19,7 @@ skidX currently uses a modified version of headlessmc, its a brilliant project g
 Only forge will be supported as faabric 1.8.9 sucks<br/>
 Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [x] Flask webserver for uploading files for analysis and viewing the results <br/> 
-- [x] Complete offline VM setup (Still testing, might not happen)<br/> 
+- [ ] Complete offline VM setup (Still testing, might not happen)<br/> 
 - [x] Client for the sandbox VM to detonate the malware <br/>
 - [x] Highlighting of potential C2's in the results <br/>
 - [x] Headless client for the sandbox VM <br/>
@@ -27,21 +27,21 @@ Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [ ] A que for multiple files, although only will file can run at a time <br/>
 - [ ] Documentation (probably the bare minimum for the POC) <br/>
 ### V1 
-YARA rules for identifying different strains of infostealers <br/>
-Migration of the webserver from flask to something like waitress combined with nginx <br/>
-A malicious score out of 100 <br/>
-Support for KVM and nested virtualization (potentially) <br/>
-Nicer looking webserver <br/>
-An API (probably JSON based) <br/>
-Support for multiple VM's at once<br/>
-HTTPS decryption with polar proxy <br/>
+- [ ] YARA rules for identifying different strains of infostealers <br/>
+- [ ] Migration of the webserver from flask to something like waitress combined with nginx <br/>
+- [ ] A malicious score out of 100 <br/>
+- [ ] Support for KVM and nested virtualization (potentially) <br/>
+- [ ] Nicer looking webserver <br/>
+- [ ] An API (JSON based) <br/>
+- [ ] Support for multiple VM's at once<br/>
+- [ ] HTTPS decryption with polar proxy <br/>
 ### V2 
-Integration with isthisarat to help with verdicts <br/>
+- [ ] Integration with isthisarat to help with verdicts <br/>
 (isthisarat has no api for submissions so this might not happen) <br/>
 (isthisarat has also been down for a long time without any communication from the dev) <br/>
-Virus total integration for comments and such <br/>
-Automated writing of mediafire reports (just the description not actually submitting them) <br/>
-Geolocation of requests <br/>
-Script for automatically finding and downloading samples <br/>
+- [ ] Virus total integration for comments and such <br/>
+- [ ] Automated writing of mediafire reports (just the description not actually submitting them) <br/>
+- [ ] Geolocation of requests <br/>
+- [ ] Script for automatically finding and downloading samples <br/>
 
 *There will most likely be more I have forgotten to add and this list will change*
