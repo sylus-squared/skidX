@@ -14,18 +14,18 @@ This project aims to change that. <br/>
 skidX detonates the sample on the sandbox VM and collects network data (and other stuff in the future) using inetsim then displays said data in a nice easy to read format. All the user has to do is upload the file, wait a few mins and look at the log. <br/>
 skidX currently uses a modified version of headlessmc, its a brilliant project go check it out [here](https://github.com/3arthqu4ke/headlessmc) <br/>
 
-# Roadmap 
-### Proof of concept 
-Flask webserver for uploading files for analysis and viewing the results <br/>
+# Roadmap
+### Proof of concept
 Only forge will be supported as faabric 1.8.9 sucks<br/>
-Initially only 1.8.9 will be supported, this will change in later versions
-Complete offline VM setup (Still testing, might not happen)<br/>
-Client for the sandbox VM to detonate the malware <br/>
-Highlighting of potential C2's in the results <br/>
-Headless client for the sandbox VM <br/>
-Support for automatically reverting the VM to a specified snapshot for Proxmox <br/>
-A que for multiple files, although only will file can run at a time <br/>
-Documentation (probably the bare minimum for the POC) <br/>
+Initially only 1.8.9 will be supported, this will change in later versions<br/>
+- [x]Flask webserver for uploading files for analysis and viewing the results <br/> 
+- [x]Complete offline VM setup (Still testing, might not happen)<br/> 
+- [x]Client for the sandbox VM to detonate the malware <br/>
+- [x]Highlighting of potential C2's in the results <br/>
+- [x]Headless client for the sandbox VM <br/>
+- [x]Support for automatically reverting the VM to a specified snapshot for Proxmox <br/>
+- []A que for multiple files, although only will file can run at a time <br/>
+- []Documentation (probably the bare minimum for the POC) <br/>
 ### V1 
 YARA rules for identifying different strains of infostealers <br/>
 Migration of the webserver from flask to something like waitress combined with nginx <br/>
