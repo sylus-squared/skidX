@@ -15,7 +15,7 @@ with open("../webserver/config/config.json", "r") as read_file:
 
 proxmox_IP = config["machinery"]["proxmox_IP"]
 
-with open("creds.txt", 'r') as file:
+with open("../machinery/creds.txt", 'r') as file: # This is run from the contex of the webserver so it needs the path
     lines = file.readlines()
 
 for line in lines:
