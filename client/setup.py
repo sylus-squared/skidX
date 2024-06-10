@@ -49,7 +49,7 @@ with open("config/config.json", "r") as read_file:
 
 serverIP = config["connection"]["serverIP"]
 
-files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "background.png"]
+files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "jre-8u411-windows-x64.exe", "pythonInstaller.exe", "background.png"]
 backgrounds = ["background_purple.png", "background_red.png", "background_blue.png", "background_black.png", "background_white.png"]
 
 url = f"http://{serverIP}:5000/setup"
@@ -61,7 +61,7 @@ for filename in files:
         background_filename = backgrounds[random.randint(0,4)]
         url_to_download = url + "/" + background_filename
         urllib.request.urlretrieve(url_to_download, background_filename)
-    elif filename == "headlessmc-launcher-1.9.0.jar":
+    elif filename == "headlessmc-launcher-1.9.0.jar" or filename == "jre-8u411-windows-x64.exe" or filename == "pythonInstaller.exe": # There is probbly a better way to do this
         url_to_download = url + "/" + filename
         urllib.request.urlretrieve(url_to_download, filename)
     else:
