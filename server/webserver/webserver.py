@@ -46,6 +46,9 @@ stream_handler.setFormatter(formatter)
 logger.addHandler(file_handler)  # Add both handlers to the logger
 logger.addHandler(stream_handler)
 
+analysis_running = False
+file_que = []
+
 if not os.path.exists("config/config.json"):
     logging.critical("Config file does not exist and the program cannot continue")
     quit()
@@ -70,7 +73,7 @@ snapshot_name = config["machinery"]["snapshot_name"]
 snapshot_list = get_snapshot_list(vm_id, ticket, csrf_token)
 snapshot_created = False
 
-for i in snapshot_list: # For some unknown reason, python refuses to allow me to just do i["name"], it just gives me a key error, but this works fine for no reason
+for i in snapshot_list: # For some reason, python refuses to allow me to just do i["name"], it just gives me a key error, but this works fine for no reason
     for key, value in i.items():
         if value == snapshot_name:
             snapshot_created = True
@@ -83,6 +86,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 
 #---------------------------------------------------------------------------
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -128,6 +132,9 @@ def setup(file): # Used to get all necessary files for the endpoint to function 
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
+    global analysis_running
+    global file_que
+
     if "fileInput" not in request.files:
         return jsonify({"error": "No file part"}), 400
 
@@ -155,6 +162,10 @@ def upload_file():
 
         if file_name + ".txt" in analysis_in_progress or os.path.exists(f"data/{file_name}"):
             return jsonify({"error": "File has already been analysed"}), 409
+
+        if analysis_running:
+            file_que.append([new_filename, analysis_time])
+            return jsonify({"error": "Analysis in progress, file added to que"}), 200
 
         try:
             upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
@@ -202,6 +213,9 @@ def check_file_status(file):
 
 @app.route("/result", methods=["POST"])
 def result():
+    global analysis_running
+    global file_que
+
     if "file" not in request.files:
         return "No file part in the request", 400
 
@@ -211,6 +225,25 @@ def result():
 
     if file:
         file.save(os.path.join("data", file.filename))
+        analysis_in_progress.remove(file.filename)
+
+        first_in_que = file_que[0]
+        if first_in_que[0] == file.filename:
+            file_que.pop[0]
+
+        if not file_que == []: # If there are files in the que
+            try:
+                file_array = file_que[0]
+                upload_file(os.path.join(app.config["UPLOAD_FOLDER"], file_array[0]), config, file_array[1])
+            except ConnectionRefusedError:
+                logging.critical("File upload failed, is the analysis server online?")
+                        
+            analysis_in_progress.append(file_array[0] + ".txt") # The display endpoint needs the extension to work, change this at some point
+            run_inetsim(analysis_time - 10, file_array[1]) # The - 10 is to ensure that inetsim stops before the client sends the report
+            logging.info("Sent a file from the que with the hash: " + file_array[0])
+            return "File uploaded successfully", 200
+
+        analysis_running = False
         return "File uploaded successfully", 200
     else:
         return "Error saving file", 500
