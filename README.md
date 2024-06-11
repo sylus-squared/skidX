@@ -24,7 +24,7 @@ Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [x] Highlighting of potential C2's in the results <br/>
 - [x] Headless client for the sandbox VM <br/>
 - [x] Support for automatically reverting the VM to a specified snapshot for Proxmox <br/>
-- [ ] A que for multiple files, although only will file can run at a time <br/>
+- [x] A que for multiple files, although only will file can run at a time <br/>
 - [ ] Documentation (probably the bare minimum for the POC) <br/>
 ### V1 
 - [ ] YARA rules for identifying different strains of infostealers <br/>
