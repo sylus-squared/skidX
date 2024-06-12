@@ -63,7 +63,7 @@ def create_snapshot(vm_id, ticket, csrf_token):
     else:
         print(f"Error creating snapshot for VM {vm_id}: {response.text}")
 
-def revert_to_snapshot(vm_id, ticket, csrf_token):
+def revert_to_snapshot(snapshot_name, vm_id, ticket, csrf_token):
     url = f"https://{proxmox_IP}:8006/api2/json/nodes/localhost/qemu/{vm_id}/snapshot/{snapshot_name}/rollback"
     headers = {
         "Cookie": f"PVEAuthCookie={ticket}",
@@ -72,5 +72,6 @@ def revert_to_snapshot(vm_id, ticket, csrf_token):
     response = requests.post(url, headers=headers, verify=False)
     if response.status_code == 200:
         print(f"VM {vm_id} reverted to snapshot {snapshot_name}")
+        return True
     else:
-        print(f"Error reverting VM {vm_id} to snapshot {snapshot_name}: {response.text}")
+      return print(f"Error reverting VM {vm_id} to snapshot {snapshot_name}: {response.text}")
