@@ -85,6 +85,8 @@ if snapshot_created == False:
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {"jar"}
 
+def trigger_error(message):
+    event_stream().send(f'data: {{ "message": "{message}" }}\n\n')
 #---------------------------------------------------------------------------
 
 @app.route('/')
@@ -112,6 +114,18 @@ def not_found(e):
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory("static", "favicon.ico", mimetype="image/vnd.microsoft.icon")
+
+@app.route("/error/<message>")
+def show_error(message):
+    return render_template('error.html', error_message=message)
+
+@app.route('/events')
+def events():
+    def event_stream():
+        while True:
+            yield f'data: {{"message": "{message}"}}\n\n'
+            time.sleep(1)
+    return Response(event_stream(), mimetype='text/event-stream')
 
 @app.route("/setup/<file>", methods=["GET"])
 def setup(file): # Used to get all necessary files for the endpoint to function without internet
@@ -230,6 +244,12 @@ def result():
         first_in_que = file_que[0]
         if first_in_que[0] == file.filename:
             file_que.pop[0]
+
+        revert = proxmox.revert_to_snapshot(snapshot_name, vm_id, ticket, csrf_token)
+        if not revert:
+            logging.critical(revert)
+            logging.info("Program will continue on outdated snapshot")
+            trigger_error("Critital error: the program could not revert to a the snapshot and will continue in a potentially compromised state")
 
         if not file_que == []: # If there are files in the que
             try:
