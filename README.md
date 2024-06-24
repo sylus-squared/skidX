@@ -43,5 +43,6 @@ Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [ ] Automated writing of mediafire reports (just the description not actually submitting them) <br/>
 - [ ] Geolocation of requests <br/>
 - [ ] Script for automatically finding and downloading samples <br/>
+- [ ] Support for internet access on the VM through TOR, a VPN or a proxy <br/>
 
 *There will most likely be more I have forgotten to add and this list will change*
