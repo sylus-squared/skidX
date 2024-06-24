@@ -36,9 +36,6 @@ Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [ ] Support for multiple VM's at once<br/>
 - [ ] HTTPS decryption with polar proxy <br/>
 ### V2 
-- [ ] Integration with isthisarat to help with verdicts <br/>
-(isthisarat has no api for submissions so this might not happen) <br/>
-(isthisarat has also been down for a long time without any communication from the dev) <br/>
 - [ ] Virus total integration for comments and such <br/>
 - [ ] Automated writing of mediafire reports (just the description not actually submitting them) <br/>
 - [ ] Geolocation of requests <br/>
