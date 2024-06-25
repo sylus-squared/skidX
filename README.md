@@ -5,7 +5,7 @@
 # What is it? 
 skidX is a self hosted malware analysis environment for malicious minecraft mods. There are many other online sandboxes for analysing traditional malware, however, due to the fact that minecraft (and forge/fabric) is a requirement to execute the mod, none of them work with minecraft mods :( <br/>
 
-Some sandboxes that do static code analysis can tell if some minecraft rats are malicious ([hybird analysis](https://www.hybrid-analysis.com/) has been most consistent for me), they do not work well if the sample is obfuscated.
+Some sandboxes that do static code analysis can tell if some minecraft rats are malicious ([hybird analysis](https://www.hybrid-analysis.com/) has been most consistent for me) however, they do not work well if the sample is obfuscated.
 
 And while there are solutions to tell if a mod is malicious (see [ratterscanner](https://ratterscanner.com)) extracting the C2 can be difficult by just analysing the code (especially if its been obfuscated). Ratterscanner can detonate samples, collecting data with a mitm proxy however it only collects network data, skidX will collect data about how the sample interacts with the system and any aditional stages the sample might download. <br/>
 
