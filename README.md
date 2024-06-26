@@ -16,7 +16,7 @@ skidX currently uses a modified version of headlessmc, its a brilliant project g
 
 # Roadmap
 ### Proof of concept
-Only forge will be supported as faabric 1.8.9 sucks<br/>
+Only forge will be supported as fabric 1.8.9 sucks<br/>
 Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [x] Flask webserver for uploading files for analysis and viewing the results <br/> 
 - [ ] Complete offline VM setup (Still testing, might not happen)<br/> 
