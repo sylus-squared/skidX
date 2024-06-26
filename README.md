@@ -7,11 +7,11 @@ skidX is a self hosted malware analysis environment for malicious minecraft mods
 
 Some sandboxes that do static code analysis can tell if some minecraft rats are malicious ([hybird analysis](https://www.hybrid-analysis.com/) has been most consistent for me) however, they do not work well if the sample is obfuscated.
 
-And while there are solutions to tell if a mod is malicious (see [ratterscanner](https://ratterscanner.com)) extracting the C2 can be difficult by just analysing the code (especially if its been obfuscated). Ratterscanner can detonate samples, collecting data with a mitm proxy however it only collects network data (often it does not even display the full C2 address), skidX will collect data about how the sample interacts with the system and any aditional stages the sample might download. <br/>
+And while there are solutions to tell if a mod is malicious (see [ratterscanner](https://ratterscanner.com)) extracting the C2 can be difficult by just analysing the code (especially if its been obfuscated). Ratterscanner can detonate samples, collecting data with a mitm proxy however it only collects network data (often it does not even display the full C2 address).
 
 This project aims to change that. <br/>
 
-skidX detonates the sample on the sandbox VM and collects network data (and other stuff in the future) using inetsim then displays said data in a nice easy to read format. All the user has to do is upload the file, wait a few mins and look at the log. <br/>
+skidX detonates the sample on the sandbox VM and collects network data using inetsim then displays said data in a nice easy to read format. All the user has to do is upload the file, wait a few mins and look at the log. In later versions, skidX will collect data about how the sample interacts with the system and any aditional stages the sample might download. <br/>
 skidX currently uses a modified version of headlessmc, its a brilliant project go check it out [here](https://github.com/3arthqu4ke/headlessmc) <br/>
 
 # Roadmap
