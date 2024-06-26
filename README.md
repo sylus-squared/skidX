@@ -14,6 +14,9 @@ This project aims to change that. <br/>
 skidX detonates the sample on the sandbox VM and collects network data using inetsim then displays said data in a nice easy to read format. All the user has to do is upload the file, wait a few mins and look at the log. In later versions, skidX will collect data about how the sample interacts with the system and any aditional stages the sample might download. <br/>
 skidX currently uses a modified version of headlessmc, its a brilliant project go check it out [here](https://github.com/3arthqu4ke/headlessmc) <br/>
 
+# Documentation
+Docs can be found at [docs.sylus.dev](https://docs.sylus.dev)<br/>
+
 # Roadmap
 ### Proof of concept
 Only forge will be supported as fabric 1.8.9 sucks<br/>
