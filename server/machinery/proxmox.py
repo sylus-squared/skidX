@@ -52,6 +52,7 @@ def get_snapshot_list(vm_id, ticket, csrf_token):
 
 def create_snapshot(vm_id, ticket, csrf_token):
     url = f"https://{proxmox_IP}:8006/api2/json/nodes/localhost/qemu/{vm_id}/snapshot"
+    snapshot_name = config["machinery"]["snapshot_name"]
     data = {"snapname": snapshot_name}
     headers = {
         "Cookie": f"PVEAuthCookie={ticket}",

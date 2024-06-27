@@ -2,7 +2,8 @@
     "connection": {
         "client_IP": "127.0.0.1",
         "port": 12345,
-        "interface_IP": "127.0.0.1"
+        "interface_IP": "127.0.0.1",
+        "webserver_ip": "127.0.0.1"
     },
 
     "machinery": {

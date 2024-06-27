@@ -277,4 +277,4 @@ if __name__ == "__main__":
     if not os.path.exists("logs"):
         os.makedirs("logs")
     logging.info("Webserver started")
-    app.run(debug=False)
+    app.run(host=config["connection"]["webserver_ip"], debug=False)
