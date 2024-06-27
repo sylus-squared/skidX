@@ -22,7 +22,7 @@ Docs can be found at [docs.sylus.dev](https://docs.sylus.dev)<br/>
 Only forge will be supported as fabric 1.8.9 sucks<br/>
 Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [x] Flask webserver for uploading files for analysis and viewing the results <br/> 
-- [ ] Complete offline VM setup (Still testing, might not happen)<br/> 
+- [x] Complete offline VM setup <br/> 
 - [x] Client for the sandbox VM to detonate the malware <br/>
 - [x] Highlighting of potential C2's in the results <br/>
 - [x] Headless client for the sandbox VM <br/>
