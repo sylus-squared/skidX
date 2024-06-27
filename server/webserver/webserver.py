@@ -26,7 +26,7 @@ print("""
 
 app.config["UPLOAD_FOLDER"] = "uploads"
 ALLOWED_FILES = ["headlessmc-launcher-1.9.0.jar", ".minecraft", "HeadlessMC", "config", "background_blue.png",
- "background_red.png", "background_black.png", "background_purple.png", "background_white.png", "jre-8u411-windows-x64.exe", "python.exe"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
+ "background_red.png", "background_black.png", "background_purple.png", "background_white.png", "jre-8u411-windows-x64.exe", "python.exe", "requests"] # Files the endpoint is allowed to access from the /setup endpoint (to prevent LFI)
 analysis_in_progress = []
 
 # Setup propper logging
