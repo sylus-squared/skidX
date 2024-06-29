@@ -5,6 +5,7 @@ import zipfile
 import json
 import random
 import ctypes
+import shutil
 
 """
 An interface IP is not needed here as its assumed the client only has one interface although I might add
@@ -48,9 +49,11 @@ with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
 
 serverIP = config["connection"]["serverIP"]
+module_dir = os.path.dirname(os.__file__)
 
-files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "jre-8u411-windows-x64.exe", "pythonInstaller.exe", "background.png"]
+files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "requests", "requests", "urllib3", "chardet", "certifi", "idna", "background.png"]
 backgrounds = ["background_purple.png", "background_red.png", "background_blue.png", "background_black.png", "background_white.png"]
+modules = ["requests", "urllib3", "chardet", "certifi", "idna"]# I don't like repeating code but I subscribe to the principle of EASIER DEBUG!
 
 url = f"http://{serverIP}:5000/setup"
 filename = ""
@@ -61,7 +64,7 @@ for filename in files:
         background_filename = backgrounds[random.randint(0,4)]
         url_to_download = url + "/" + background_filename
         urllib.request.urlretrieve(url_to_download, background_filename)
-    elif filename == "headlessmc-launcher-1.9.0.jar" or filename == "jre-8u411-windows-x64.exe" or filename == "pythonInstaller.exe": # There is probbly a better way to do this
+    elif filename == "headlessmc-launcher-1.9.0.jar": # There is probbly a better way to do this
         url_to_download = url + "/" + filename
         urllib.request.urlretrieve(url_to_download, filename)
     else:
@@ -73,7 +76,19 @@ for filename in files:
         except:
             pass
 
+for module in modules:
+    if os.path.exists(module):
+        try:
+            shutil.copytree(requests_dir, os.path.join(module_dir, module))
+        except FileExistsError:
+            print(f"Module: {module} already exists in destination")
+
 if not os.path.exists(os.getenv('APPDATA') + "\\.minecraft"):
-    os.rename(".minecraft", os.getenv('APPDATA') + "\\.minecraft")
+    try:
+        shutil.copytree(".minecraft", os.getenv('APPDATA') + "\\.minecraft")
+    except FileExistsError:
+        print("Minecraft directory already exists")
+if os.path.exists("requests"):
+    os.rename()
 if os.path.exists(os.path.abspath(background_filename)):
     ctypes.windll.user32.SystemParametersInfoW(20, 0, os.path.abspath(background_filename) , 0)
