@@ -29,6 +29,7 @@ Initially only 1.8.9 will be supported, this will change in later versions<br/>
 - [x] Support for automatically reverting the VM to a specified snapshot for Proxmox <br/>
 - [x] A que for multiple files, although only will file can run at a time <br/>
 - [ ] Documentation (probably the bare minimum for the POC) <br/>
+- [ ] Fully tested and working proof of concept (the proof of concept is finished) <br/>
 ### V1 
 - [ ] YARA rules for identifying different strains of infostealers <br/>
 - [ ] Migration of the webserver from flask to something like waitress combined with nginx <br/>
