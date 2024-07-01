@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-        <script src="{{ url_for('static', filename='error.js') }}"></script>
         <title>SkidX</title>
     </head>
 <body>
@@ -35,42 +34,60 @@
         }
 
         function confirmUpload() {
-            var fileInput = document.getElementById('fileInput');
-            var analysisInputBox = document.getElementById('analysisInputBox');
-            var file = fileInput.files[0];
-            var analysisTime = analysisInputBox.value;
 
-            if (file) {
-                var reader = new FileReader();
+var fileInput = document.getElementById('fileInput');
 
-                reader.onload = async function(event) {
-                    var formData = new FormData();
-                    formData.append('fileInput', file);
-                    formData.append('analysisTime', analysisTime);
+var analysisInputBox = document.getElementById('analysisInputBox');
 
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'http://localhost:5000/upload', true);
+var file = fileInput.files[0];
 
-                    xhr.onload = function () {
-                        if (xhr.status === 200) {
-                            var response = JSON.parse(xhr.responseText);
-                            var hash = response.hash;
-                            loadPage('display/' + hash);
-                        } else {
-                            var response = JSON.parse(xhr.responseText);
-                            var error = response.error;
-                            alert(error);
-                        }
-                    };
+var analysisTime = analysisInputBox.value;
 
-                    xhr.send(formData);
-                };
 
-                reader.readAsArrayBuffer(file);
-            } else {
-                alert('Please select a file to upload.');
-            }
-        }
+if (file) {
+
+  var xhrConfig = new XMLHttpRequest(); // Read the config file to get the webservers IP
+  xhrConfig.open('GET', '../config/config.json', true);
+  xhrConfig.onload = function() {
+    if (xhrConfig.status === 200) {
+      var configFile = JSON.parse(xhrConfig.responseText);
+      var webserverIP = configFile.connection.webserver_ip;
+
+      var reader = new FileReader();
+
+      reader.onload = async function(event) {
+        var formData = new FormData();
+        formData.append('fileInput', file);
+        formData.append('analysisTime', analysisTime);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://' + webserverIP + ':5000/upload', true);
+
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            var hash = response.hash;
+            loadPage('display/' + hash);
+          } else {
+            var response = JSON.parse(xhr.responseText);
+            var error = response.error;
+            alert(error);
+          }
+        };
+
+        xhr.send(formData);
+      };
+
+      reader.readAsArrayBuffer(file);
+    } else {
+      alert('Error reading config file');
+    }
+  };
+  xhrConfig.send();
+} else {
+  alert('Please select a file to upload.');
+}
+}
     </script>
 </body>
 </html>

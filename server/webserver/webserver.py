@@ -120,14 +120,6 @@ def favicon():
 def show_error(message):
     return render_template('error.html', error_message=message)
 
-@app.route('/events')
-def events():
-    def event_stream():
-        while True:
-            yield f'data: {{"message": "{message}"}}\n\n'
-            time.sleep(1)
-    return Response(event_stream(), mimetype='text/event-stream')
-
 @app.route("/setup/<file>", methods=["GET"])
 def setup(file): # Used to get all necessary files for the endpoint to function without internet
     print(file)
