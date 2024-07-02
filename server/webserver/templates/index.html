@@ -26,56 +26,41 @@
  </form>
 </div>
 <script>
-function loadPage(route) {
+function loadPage(route) { // Navigate to a new page
   console.log("Navigating to: " + route);
-    window.location.href = "/" + route;
-    return false;
+  window.location.href = "/" + route;
+  return false;
 }
 
 function confirmUpload() {
   var fileInput = document.getElementById('fileInput');
-  var analysisInputBox = document.getElementById('analysisInputBox');
   var file = fileInput.files[0];
-  var analysisTime = analysisInputBox.value;
 
   if (file) {
-    var xhrConfig = new XMLHttpRequest(); // Read the config file to get the webservers IP
-    xhrConfig.open('GET', '../config/config.json', true);
-    xhrConfig.onload = function() {
-      if (xhrConfig.status === 200) {
-        var configFile = JSON.parse(xhrConfig.responseText);
-        var webserverIP = configFile.connection.webserver_ip;
-        var reader = new FileReader();
+    var reader = new FileReader();
 
-        reader.onload = async function(event) {
-          var formData = new FormData();
-          formData.append('fileInput', file);
-          formData.append('analysisTime', analysisTime);
+    reader.onload = async function(event) {
+    var formData = new FormData();
+    formData.append('fileInput', file);
+    var xhr = new XMLHttpRequest();
+    var webserver_IP = "{{ ip }}"
 
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', 'http://' + webserverIP + ':5000/upload', true);
+    xhr.open('POST', "http://" + webserver_IP + ":5000/upload", true);
 
-          xhr.onload = function() {
-            if (xhr.status === 200) {
-              var response = JSON.parse(xhr.responseText);
-              var hash = response.hash;
-              loadPage('display/' + hash);
-            } else {
-              var response = JSON.parse(xhr.responseText);
-              var error = response.error;
-              alert(error);
-            }
-          };
-
-          xhr.send(formData);
-        };
-
-        reader.readAsArrayBuffer(file);
-      } else {
-        alert('Error reading config file');
-      }
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            var hash = response.hash;
+            loadPage('display/' + hash);
+        } else {
+            alert('Error uploading file. Please try again.');
+        }
     };
-    xhrConfig.send();
+
+    xhr.send(formData);
+    };
+
+    reader.readAsArrayBuffer(file);
   } else {
     alert('Please select a file to upload.');
   }

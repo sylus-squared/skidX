@@ -92,7 +92,7 @@ def trigger_error(message):
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", ip=config["connection"]["interface_IP"])
 
 @app.route("/search")
 def search():
@@ -270,4 +270,4 @@ if __name__ == "__main__":
     if not os.path.exists("logs"):
         os.makedirs("logs")
     logging.info("Webserver started")
-    app.run(host=config["connection"]["webserver_ip"], debug=False)
+    app.run(host=config["connection"]["interface_IP"], debug=False)
