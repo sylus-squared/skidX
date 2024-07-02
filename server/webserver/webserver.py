@@ -175,7 +175,7 @@ def upload_file():
             return jsonify({"error": "Analysis in progress, file added to que"}), 200
 
         try:
-            upload_file(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
+            upload_file_script(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
         except ConnectionRefusedError:
             logging.critical("File upload failed, is the analysis server online?")
             return jsonify({"error": "File upload failed, is the analysis server online?"}), 500
@@ -247,7 +247,7 @@ def result():
         if not file_que == []: # If there are files in the que
             try:
                 file_array = file_que[0]
-                upload_file(os.path.join(app.config["UPLOAD_FOLDER"], file_array[0]), config, file_array[1])
+                upload_file_script(os.path.join(app.config["UPLOAD_FOLDER"], file_array[0]), config, file_array[1])
             except ConnectionRefusedError:
                 logging.critical("File upload failed, is the analysis server online?")
                         

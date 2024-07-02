@@ -29,7 +29,7 @@ def send_file(file_path, server_address, server_port, interfaces_ip, analysis_ti
 
     client_socket.close()
 
-def upload_file(file_path, config, analysis_time):
+def upload_file_script(file_path, config, analysis_time):
     interface_ip = config["connection"]["interface_IP"]
     server_ip = config["connection"]["client_IP"]
     server_port = config["connection"]["port"]
