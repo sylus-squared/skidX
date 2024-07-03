@@ -3,8 +3,8 @@ from flask_cors import CORS
 import os
 import json
 import sys
-import scripts.uploadFile
-import scripts.inetsim
+from scripts.uploadFile import upload_file_script 
+from scripts.inetsim import run_inetsim, get_report
 sys.path.insert(0, os.path.abspath('../machinery')) # I hate that I have to do this
 from proxmox import get_ticket, get_snapshot_list, create_snapshot, revert_to_snapshot 
 import shutil
