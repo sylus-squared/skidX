@@ -6,11 +6,17 @@ import shutil
 class AnalysisNotCompleteError(Exception):
     pass # Thrown when the analysis direcory does not exist (Is this really necessary?)
 
+class ProcessCouldNotStart(Exception):
+    pass
+
 def run_inetsim(timeout, file_hash):
     if not os.path.exists(file_hash): # There should only be ONE analysis file per sample, this is just to make sure
         os.mkdir(file_hash)
-
-    process = subprocess.Popen(f"sudo inetsim --data data --conf inetsim.conf --report-dir {file_hash}", shell=True, executable="/bin/bash")
+    try:
+        process = subprocess.Popen(f"sudo inetsim --data data --conf inetsim.conf --report-dir {file_hash}", shell=True, executable="/bin/bash")
+    except:
+        print("Error starting inetsim")
+        raise ProcessCouldNotStart
 
     try:
         process.wait(40)  # set timeout
