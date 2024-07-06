@@ -92,14 +92,23 @@ def trigger_error(message):
 
 @app.route('/')
 def index():
+    if request.environ['REMOTE_ADDR'] == config["connection"]["client_IP"]:
+        return jsonify({"error": "Access denied"}), 403
+
     return render_template("index.html", ip=config["connection"]["interface_IP"])
 
 @app.route("/search")
 def search():
+    if request.environ['REMOTE_ADDR'] == config["connection"]["client_IP"]:
+        return jsonify({"error": "Access denied"}), 403
+
     return render_template("search.html")
 
 @app.route("/get_files")
 def get_files():
+    if request.environ['REMOTE_ADDR'] == config["connection"]["client_IP"]:
+        return jsonify({"error": "Access denied"}), 403
+
     data_dir = "data"
     files = [
         os.path.splitext(f)[0]
@@ -115,10 +124,6 @@ def not_found(e):
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory("static", "favicon.ico", mimetype="image/vnd.microsoft.icon")
-
-@app.route("/error/<message>")
-def show_error(message):
-    return render_template('error.html', error_message=message)
 
 @app.route("/setup/<file>", methods=["GET"])
 def setup(file): # Used to get all necessary files for the endpoint to function without internet
@@ -139,6 +144,9 @@ def setup(file): # Used to get all necessary files for the endpoint to function 
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
+    if request.environ['REMOTE_ADDR'] == config["connection"]["client_IP"]:
+        return jsonify({"error": "Access denied"}), 403
+
     global analysis_running
     global file_que
 
@@ -193,6 +201,9 @@ def upload_file():
 
 @app.route("/display/<file>")
 def display(file="test"):
+    if request.environ['REMOTE_ADDR'] == config["connection"]["client_IP"]:
+        return jsonify({"error": "Access denied"}), 403
+
     file_path = os.path.join(os.path.dirname(__file__), "data", file + ".txt")
     print(file_path)
     file_name_with_extension = os.path.basename(file_path)
@@ -215,6 +226,9 @@ def display(file="test"):
 
 @app.route("/check_file_status/<file>")
 def check_file_status(file):
+    if request.environ['REMOTE_ADDR'] == config["connection"]["client_IP"]:
+        return jsonify({"error": "Access denied"}), 403
+
     data_dir = "data"
     file_path = os.path.join(data_dir, file + ".txt")
     
