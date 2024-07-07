@@ -53,7 +53,7 @@ module_dir = os.path.dirname(os.__file__)
 
 files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "requests", "requests", "urllib3", "chardet", "certifi", "idna", "background.png"]
 backgrounds = ["background_purple.png", "background_red.png", "background_blue.png", "background_black.png", "background_white.png"]
-modules = ["requests", "urllib3", "chardet", "certifi", "idna"]# I don't like repeating code but I subscribe to the principle of EASIER DEBUG!
+modules = ["requests.zip", "urllib3.zip", "chardet.zip", "certifi.zip", "idna.zip"]# I don't like repeating code but I subscribe to the principle of EASIER DEBUG!
 
 url = f"http://{serverIP}:5000/setup"
 filename = ""
@@ -77,7 +77,15 @@ for filename in files:
             pass
 
 for module in modules:
-    if os.path.exists(module):
+    if not os.path.exists(module):
+        url_to_download = url + "/" + module
+        urllib.request.urlretrieve(url_to_download, module + ".zip")
+        try:
+            with zipfile.ZipFile(module + ".zip", 'r') as zip_ref:
+                zip_ref.extractall(module)
+        except:
+            pass
+
         try:
             shutil.copytree(requests_dir, os.path.join(module_dir, module))
         except FileExistsError:
