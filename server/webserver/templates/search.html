@@ -5,22 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>SkidX</title>
-</head>
-<body>
-    <div class="sidebar">
-        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
-        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
-        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
-    </div> 
-<div class="content" id="mainContent">
-    <img src="{{ url_for('static', filename='purple_text_logo_NB.png') }}" alt="Logo">
-    <h1>This is a proof of concept</h1>
-    <p>It will be very buggy</p>
-    <h1>Reports</h1>
-
-    <!-- Buttons for dynamically loaded files -->
-    <div id="fileButtons"></div>
-</div>
 <script>
     function loadPage(route) {
         console.log("Navigating to: " + route);
@@ -50,5 +34,24 @@
     // Generate the buttons when the page loads
     window.onload = generateFileButtons;
 </script>
+</head>
+<body>
+    <div class="sidebar">
+        <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
+        <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
+    </div> 
+<div class="content" id="mainContent">
+    <img src="{{ url_for('static', filename='purple_text_logo_NB.png') }}" alt="Logo">
+    <h1>This is a proof of concept</h1>
+    <p>It will be very buggy</p>
+    <h1>Reports</h1>
+
+    <!-- Buttons for dynamically loaded files -->
+    <div id="fileButtons"></div>
+</div>
+<footer>
+    <p>Email me at sylus@sylus.dev if you find issues or want to suggest feature</p>
+</footer>
 </body>
 </html>

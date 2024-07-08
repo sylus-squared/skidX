@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>SkidX</title>
+<script>
+    function loadPage(route) {
+        console.log("Navigating to: " + route);
+        window.location.href = "/" + route;
+        return false;
+    }
+
+    function checkFileStatus() {
+        var fileName = window.location.pathname.split('/').pop();
+        fetch('/check_file_status/' + fileName)
+            .then(response => response.json())
+            .then(data => {
+                if (data.fileExists) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => console.error('Error checking file status:', error));
+    }
+
+    var fileContent = '{{ file_content }}';
+    if (fileContent === "None") {
+        setInterval(checkFileStatus, 30000); // 30 seconds
+    } else {
+        clearInterval();
+    }
+</script>
 </head>
 <body>
     <div class="sidebar">
@@ -26,32 +52,8 @@
             {% endif %}
         </div>
     </div>
-
-    <script>
-        function loadPage(route) {
-            console.log("Navigating to: " + route);
-            window.location.href = "/" + route;
-            return false;
-        }
-
-        function checkFileStatus() {
-            var fileName = window.location.pathname.split('/').pop();
-            fetch('/check_file_status/' + fileName)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.fileExists) {
-                        window.location.reload();
-                    }
-                })
-                .catch(error => console.error('Error checking file status:', error));
-        }
-
-        var fileContent = '{{ file_content }}';
-        if (fileContent === "None") {
-            setInterval(checkFileStatus, 30000); // 30 seconds
-        } else {
-            clearInterval();
-        }
-    </script>
+    <footer>
+        <p>Email me at sylus@sylus.dev if you find issues or want to suggest feature</p>
+    </footer>
 </body>
 </html>
