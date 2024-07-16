@@ -6,6 +6,10 @@
         "webserver_ip": "127.0.0.1"
     },
 
+    "server": {
+        "que_size": 5
+    },
+
     "machinery": {
         "proxmox_IP": "127.0.0.1",
         "vm_id": 100,

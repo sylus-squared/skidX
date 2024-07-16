@@ -179,8 +179,11 @@ def upload_file():
             return jsonify({"error": "File has already been analysed"}), 409
 
         if analysis_running:
+            if len(file_que) >= config["server"]["que_size"]:
+                return jsonify({"error": "Error que is full please wait untill uploading"}), 200
+
             file_que.append([new_filename, analysis_time])
-            return jsonify({"error": "Analysis in progress, file added to que"}), 200
+            return jsonify({"error": "Analysis in progress, file added to que. File number " + len(file_que) + "/" + config["server"]["que_size"]}), 200
 
         try:
             upload_file_script(os.path.join(app.config["UPLOAD_FOLDER"], new_filename), config, analysis_time)
