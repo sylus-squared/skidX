@@ -6,6 +6,7 @@ import json
 import random
 import ctypes
 import shutil
+import sys
 
 """
 An interface IP is not needed here as its assumed the client only has one interface although I might add
@@ -17,6 +18,7 @@ Eventually it will also download all necacery YARA rules from the server (Coming
 List of packages:
 None, the client will operate with deafult packages only (fingers crossed)
 """
+modules_dir = sys.prefix + "/lib/python" + sys.version[:3] + "/site-packages"
 
 input_ip = input("Enter the IP of the analysis server: ")
 client_input_ip = input("Enter the IP of the client server (this server): ")
@@ -49,9 +51,8 @@ with open("config/config.json", "r") as read_file:
     config = json.load(read_file)
 
 serverIP = config["connection"]["serverIP"]
-module_dir = os.path.dirname(os.__file__)
 
-files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "requests", "requests", "urllib3", "chardet", "certifi", "idna", "background.png"]
+files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "requests.zip", "requests.zip", "urllib3.zip", "chardet.zip", "certifi.zip", "idna.zip", "background.png"]
 backgrounds = ["background_purple.png", "background_red.png", "background_blue.png", "background_black.png", "background_white.png"]
 modules = ["requests.zip", "urllib3.zip", "chardet.zip", "certifi.zip", "idna.zip"]# I don't like repeating code but I subscribe to the principle of EASIER DEBUG!
 
@@ -87,7 +88,7 @@ for module in modules:
             pass
 
         try:
-            shutil.copytree(requests_dir, os.path.join(module_dir, module))
+            shutil.copytree(module, modules_dir)
         except FileExistsError:
             print(f"Module: {module} already exists in destination")
 
