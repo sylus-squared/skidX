@@ -54,9 +54,9 @@ serverIP = config["connection"]["serverIP"]
 
 files = ["headlessmc-launcher-1.9.0.jar", "HeadlessMC", ".minecraft", "requests.zip", "requests.zip", "urllib3.zip", "chardet.zip", "certifi.zip", "idna.zip", "background.png"]
 backgrounds = ["background_purple.png", "background_red.png", "background_blue.png", "background_black.png", "background_white.png"]
-modules = ["requests.zip", "urllib3.zip", "chardet.zip", "certifi.zip", "idna.zip"]# I don't like repeating code but I subscribe to the principle of EASIER DEBUG!
+modules = ["requests", "urllib3.", "chardet", "certifi", "idna"]# I don't like repeating code but I subscribe to the principle of EASIER DEBUG!
 
-url = f"http://{serverIP}:5000/setup"
+url = f"http://{serverIP}:{input_port}/setup"
 filename = ""
 
 for filename in files:
