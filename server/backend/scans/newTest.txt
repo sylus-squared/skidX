@@ -1,0 +1,19 @@
+This is the updated example pcap file
+[10:10] GET: test.com
+[10:10] GET: example.com
+[10:20] 420: discord.com/api
+[10:30] 404: discord.com/404
+[10:30] POST: discord.com/users
+[10:30] POST: discord.com/api/fhhfshajasdjsa
+[10:40] GET: test.com
+[10:40] GET: eeee.dev
+[10:40] GET: python.com
+[10:10] GET: test.com
+[10:10] GET: example.com
+[10:20] 420: discord.com/api
+[10:30] 404: discord.com/404
+[10:30] POST: discord.com/users
+[10:30] POST: discord.com/api/fhhfshajasdjsa
+[10:40] GET: test.com
+[10:40] GET: eeee.dev
+[10:40] GET: python.com

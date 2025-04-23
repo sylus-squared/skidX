@@ -1,0 +1,4 @@
+proxmox_IP:	"127.0.0.1"
+proxmox_port: 8006
+vm_id:	100
+snapshot_name:	"skidXRevertShot"

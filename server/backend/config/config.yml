@@ -1,0 +1,12 @@
+client_connection:
+  client_IP: "127.0.0.1"
+  port: 12345
+
+backend_connection:
+  backend_IP: "127.0.0.1"
+  backend_port: 12345
+
+que_size: 5
+machinery: "proxmox"
+
+scan_directory: "/server/backend/scans"
