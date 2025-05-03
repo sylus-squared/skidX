@@ -21,15 +21,7 @@ Docs can be found at [docs.sylus.dev](https://docs.sylus.dev)<br/>
 ### Proof of concept
 Only forge will be supported as fabric 1.8.9 sucks<br/>
 Initially only 1.8.9 will be supported, this will change in later versions<br/>
-- [x] Flask webserver for uploading files for analysis and viewing the results <br/> 
-- [x] Complete offline VM setup <br/> 
-- [x] Client for the sandbox VM to detonate the malware <br/>
-- [x] Highlighting of potential C2's in the results <br/>
-- [x] Headless client for the sandbox VM <br/>
-- [x] Support for automatically reverting the VM to a specified snapshot for Proxmox <br/>
-- [x] A que for multiple files, although only will file can run at a time <br/>
-- [ ] Documentation (probably the bare minimum for the POC) <br/>
-- [ ] Fully tested and working proof of concept (the proof of concept is finished) <br/>
+The proof of concept is currently being rewritten, this roadmap will be updated at a later date <br/> 
 ### V1 
 - [ ] YARA rules for identifying different strains of infostealers <br/>
 - [ ] Migration of the webserver from flask to something like waitress combined with nginx <br/>
