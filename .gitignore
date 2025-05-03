@@ -10,3 +10,4 @@ server/webserver/setupFiles/.minecraft.zip
 server/webserver/setupFiles/HeadlessMC.zip
 server/machinery/creds.txt
 server/webserver/app.log
+server/backend/test_files/

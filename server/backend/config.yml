@@ -1,5 +1,5 @@
 client_connection:
-  client_IP: "127.0.0.1"
+  backend_Listen_IP: "127.0.0.1" # The IP address the backend listens for the client on
   port: 12345
 
 backend_connection:
