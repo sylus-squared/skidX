@@ -3,6 +3,7 @@ import os
 import socket
 import threading
 import random
+import json
 
 """
 load the config
@@ -22,7 +23,8 @@ first_names = [
     "Mysterious",
     "Wild",
     "Noble",
-    "Quick"
+    "Quick",
+    "laughing"
 ]
 
 second_names = [
@@ -35,7 +37,8 @@ second_names = [
     "Panther",
     "Dragon",
     "Lion",
-    "Bear"
+    "Bear",
+    "Zebra"
 ]
 
 
@@ -69,28 +72,28 @@ def register_client(ID, ip_address, os_type, hostname): # Adds the client inform
     # At some point this will do more
 
 def handle_client(client_socket, client_address):
-    print(f"[NEW CONNECTION] {client_address} connected.")
+    print(f"[CLIENT LISTENER]: [NEW CONNECTION] {client_address} connected.")
     try:
         while True:
             message = client_socket.recv(1024)
             if not message:
                 # Client has disconnected
-                print(f"[DISCONNECTED] {client_address} disconnected.")
+                print(f"[CLIENT LISTENER]: [DISCONNECTED] {client_address} disconnected.")
                 break
             text = message.decode('utf-8')
-            print(f"[{client_address}] {text}") # Temporary code for development
+            print(f"[CLIENT LISTENER]: [{client_address}] {text}") # Temporary code for development
     except ConnectionResetError:
-        print(f"[DISCONNECTED] {client_address} forcibly closed the connection.")
+        print(f"[CLIENT LISTENER]: [DISCONNECTED] {client_address} forcibly closed the connection.")
     finally:
         client_socket.close()
 
 def listen_client():
-    host = config["client_connection"]["backend_Listen_IP"]
+    host = config["client_connection"]["client_listen_IP"]
     port = config["client_connection"]["port"]
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((host, port))
     server.listen()
-    print(f"[STARTED] Server listening for clients on {host}:{port}")
+    print(f"[CLIENT LISTENER]: [STARTED] Server listening for clients on {host}:{port}")
     try:
         registered = False
         while True:
@@ -102,8 +105,8 @@ def listen_client():
 
             if not registered:
                 while True: # If all combinations are taken this will get stuck, will fix in future
-                    first_name = first_names[random.randint(1, 10)]
-                    second_name = second_names[random.randint(1, 10)]
+                    first_name = first_names[random.randint(0, 10)]
+                    second_name = second_names[random.randint(0, 10)]
                     if first_name + " " + second_name not in clients:
                         break
                 register_client(first_name + " " + second_name, client_address[0], "Windows", "Hostname")
@@ -111,12 +114,81 @@ def listen_client():
             client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address), daemon=True)
             client_thread.start()
     except KeyboardInterrupt:
-        print("\n[SHUTDOWN] Server is shutting down.")
+        print("\n[CLIENT LISTENER]: [SHUTDOWN] Server is shutting down.")
     finally:
         server.close()
 
+def handle_webserver(client_socket, client_address):
+    print(f"[WEBSERVER LISTENER]: [NEW CONNECTION] {client_address} connected.")
+    try:
+        while True:
+            # Read the command from the client
+            message = b""
+            while True:
+                part = client_socket.recv(1024)
+                message += part
+                if len(part) < 1024:  # Message is over if less than 1024 bytes have been recived
+                    break
+            if not message:
+                print(f"[WEBSERVER LISTENER]: [DISCONNECTED] {client_address} disconnected.")
+                break
+            
+            text = message.decode('utf-8')
+            print(f"[WEBSERVER LISTENER]: [{client_address}] Received: {text}")
+
+            command, options_str = text.split(' ', 1)  # Split the command from its options
+            options_str = options_str.strip('[]')  # The format for commands is command [Option1 , Option2]
+            options = [option.strip() for option in options_str.split(',')] if options_str else []
+
+            if command == "get_all_clients":
+                response = json.dumps(get_clients)
+                client_socket.sendall(response.encode('utf-8'))
+            elif command == "start_analysis":  # Command format: start_analysis ["ID", Analysis time (Minutes), Game version, File_name]
+                client = options[0]
+                analysis_time = options[1]
+                game_version = options[2]
+                file_name = options[3] if len(options) > 3 else None
+                
+                if file_name: # Receive the file
+                    file_size_bytes = client_socket.recv(8)
+                    file_size = int.from_bytes(file_size_bytes, byteorder='big')
+                    with open(file_name, 'wb') as f:
+                        bytes_received = 0
+                        while bytes_received < file_size:
+                            chunk = client_socket.recv(min(4096, file_size - bytes_received))
+                            if not chunk:
+                                break
+                            f.write(chunk)
+                            bytes_received += len(chunk)
+                    response = f"Started analysis on: {client} with file: {file_name}"
+                else:
+                    response = "No file provided for analysis."
+                client_socket.sendall(response.encode('utf-8'))
+            else:
+                print(f"[WEBSERVER LISTENER]: Unknown command: {command}")
+    except ConnectionResetError:
+        print(f"[WEBSERVER LISTENER]: [DISCONNECTED] {client_address} forcibly closed the connection.")
+    except Exception as e:
+        print(f"[WEBSERVER LISTENER]: [ERROR] {e}")
+    finally:
+        client_socket.close()
+
 def listen_webserver():
-    pass
+    host = config["backend_connection"]["backend_IP"]
+    port = config["backend_connection"]["port"]
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((host, port))
+    server.listen()
+    print(f"[WEBSERVER LISTENER]: [STARTED] Server listening for clients on {host}:{port}")
+    try:
+        while True:
+            client_socket, client_address = server.accept()
+            client_thread = threading.Thread(target=handle_webserver, args=(client_socket, client_address), daemon=True)
+            client_thread.start()
+    except KeyboardInterrupt:
+        print("\n[WEBSERVER LISTENER]: [SHUTDOWN] Server is shutting down.")
+    finally:
+        server.close()
 
 def get_client_object(ID): # Gets a client by its ID and returns the client object
     return clients.get(ID) # Might return None
@@ -130,11 +202,13 @@ def get_clients():
     for i in clients.keys():
         return_list.append(i)
     return return_list
-        
 
 # ----------------------------------------------------------- TESTING CODE, DO NOT COMMIT
-listen_client()
-print(get_clients())
+#listen_client()
+threading.Thread(target=listen_client).start()
+threading.Thread(target=listen_webserver).start()
+#listen_webserver()
+#print(get_clients())
 #register_client("Unstable Lama", "IP_adress", "os_type", "hostname")
 #print(get_client_info("Unstable Lama"))
 #print(get_client_object("Unstable Lama").hostname)
