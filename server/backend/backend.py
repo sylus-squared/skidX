@@ -202,13 +202,3 @@ def get_clients():
     for i in clients.keys():
         return_list.append(i)
     return return_list
-
-# ----------------------------------------------------------- TESTING CODE, DO NOT COMMIT
-#listen_client()
-threading.Thread(target=listen_client).start()
-threading.Thread(target=listen_webserver).start()
-#listen_webserver()
-#print(get_clients())
-#register_client("Unstable Lama", "IP_adress", "os_type", "hostname")
-#print(get_client_info("Unstable Lama"))
-#print(get_client_object("Unstable Lama").hostname)
