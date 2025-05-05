@@ -80,7 +80,7 @@ def handle_client(client_socket, client_address):
                 # Client has disconnected
                 print(f"[CLIENT LISTENER]: [DISCONNECTED] {client_address} disconnected.")
                 break
-            text = message.decode('utf-8')
+            text = message.decode("utf-8")
             print(f"[CLIENT LISTENER]: [{client_address}] {text}") # Temporary code for development
     except ConnectionResetError:
         print(f"[CLIENT LISTENER]: [DISCONNECTED] {client_address} forcibly closed the connection.")
@@ -133,16 +133,30 @@ def handle_webserver(client_socket, client_address):
                 print(f"[WEBSERVER LISTENER]: [DISCONNECTED] {client_address} disconnected.")
                 break
             
-            text = message.decode('utf-8')
+            text = message.decode("utf-8")
             print(f"[WEBSERVER LISTENER]: [{client_address}] Received: {text}")
 
-            command, options_str = text.split(' ', 1)  # Split the command from its options
-            options_str = options_str.strip('[]')  # The format for commands is command [Option1 , Option2]
-            options = [option.strip() for option in options_str.split(',')] if options_str else []
+            parts = text.split(' ', 1) # Split the command from its options
+            command = parts[0] # The format for commands is command [Option1 , Option2]
+            if len(parts) > 1:
+                options_str = parts[1].strip("[]")
+            else:
+                options_str = ""
+            if options_str:
+                options = []
+                for option in options_str.split(','):
+                    options.append(option.strip())
+            else:
+                options = []
 
             if command == "get_all_clients":
                 response = json.dumps(get_clients)
-                client_socket.sendall(response.encode('utf-8'))
+                client_socket.sendall(response.encode("utf-8"))
+
+            elif command == "test_connection":
+                response = "Connected successfully"
+                client_socket.sendall(response.encode("utf-8"))
+
             elif command == "start_analysis":  # Command format: start_analysis ["ID", Analysis time (Minutes), Game version, File_name]
                 client = options[0]
                 analysis_time = options[1]
@@ -151,8 +165,8 @@ def handle_webserver(client_socket, client_address):
                 
                 if file_name: # Receive the file
                     file_size_bytes = client_socket.recv(8)
-                    file_size = int.from_bytes(file_size_bytes, byteorder='big')
-                    with open(file_name, 'wb') as f:
+                    file_size = int.from_bytes(file_size_bytes, byteorder="big")
+                    with open(file_name, "wb") as f:
                         bytes_received = 0
                         while bytes_received < file_size:
                             chunk = client_socket.recv(min(4096, file_size - bytes_received))
