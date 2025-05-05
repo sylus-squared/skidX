@@ -154,10 +154,10 @@ def handle_webserver(client_socket, client_address):
                 client_socket.sendall(response.encode("utf-8"))
 
             elif command == "test_connection":
-                response = "Connected successfully"
+                response = f"Connected successfully to: {config["backend_connection"]["backend_IP"]} on port: {config["backend_connection"]["port"]}"
                 client_socket.sendall(response.encode("utf-8"))
 
-            elif command == "start_analysis":  # Command format: start_analysis ["ID", Analysis time (Minutes), Game version, File_name]
+            elif command == "start_analysis": # start_analysis ["ID", Analysis time (Minutes), "Game version", "File name"]
                 client = options[0]
                 analysis_time = options[1]
                 game_version = options[2]
@@ -177,9 +177,11 @@ def handle_webserver(client_socket, client_address):
                     response = f"Started analysis on: {client} with file: {file_name}"
                 else:
                     response = "No file provided for analysis."
-                client_socket.sendall(response.encode('utf-8'))
+                client_socket.sendall(response.encode("utf-8"))
             else:
                 print(f"[WEBSERVER LISTENER]: Unknown command: {command}")
+                response = f"Unkown command: {command}"
+                client_socket.sendall(response.encode("utf-8"))
     except ConnectionResetError:
         print(f"[WEBSERVER LISTENER]: [DISCONNECTED] {client_address} forcibly closed the connection.")
     except Exception as e:
@@ -216,3 +218,6 @@ def get_clients():
     for i in clients.keys():
         return_list.append(i)
     return return_list
+
+threading.Thread(target=listen_client).start()
+threading.Thread(target=listen_webserver).start()
