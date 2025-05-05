@@ -3,14 +3,9 @@
  <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+ <link rel="stylesheet" href="./css/styles.css">
  <title>SkidX</title>
  <script>
-  function loadPage(route) { // Navigate to a new page
-    console.log("Navigating to: " + route);
-    window.location.href = "/" + route;
-    return false;
-  }
   
   function confirmUpload() {
     var fileInput = document.getElementById('fileInput');
@@ -54,9 +49,9 @@
 </head>
 <body>
 <div class="sidebar">
- <button type="button" class="sidebar-button" onclick="loadPage('')">Home</button>
- <button type="button" class="sidebar-button" onclick="loadPage('search')">Search</button>
- <button type="button" class="sidebar-button" onclick="loadPage('idk')">idk</button>
+ <a href="/">Home</a>
+ <a href="/search">Search</a>
+ <a href="/idk">idk</a>
 </div>
 <div class="content" id="mainContent">
  <img src="{{ url_for('static', filename='purple_text_logo_NB.png') }}" alt="Logo">
