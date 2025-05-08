@@ -4,6 +4,7 @@ import socket
 import threading
 import random
 import json
+import time
 
 """
 load the config
@@ -57,8 +58,10 @@ with open("config.yml") as stream:
     except yaml.YAMLError as exc:
         print(exc)
 
-def start_analysis():
-    pass
+def start_analysis(file_path): # This function needs to send the file to the client, how do I get the client connection from here?
+    print("Starting analysis: " + file_path)
+    time.sleep(10) # Test stuff
+    print("Ended analysis: " + file_path)
 
 def stop_analysis():
     pass
@@ -150,7 +153,10 @@ def handle_webserver(client_socket, client_address):
                 options = []
 
             if command == "get_all_clients":
-                response = json.dumps(get_clients)
+                response = json.dumps(get_clients())
+                client_socket.sendall(response.encode("utf-8"))
+            elif command == "get_client_info": # get_client_info ["ID"]
+                response = get_client_info(options[0])
                 client_socket.sendall(response.encode("utf-8"))
 
             elif command == "test_connection":
@@ -166,7 +172,7 @@ def handle_webserver(client_socket, client_address):
                 if file_name: # Receive the file
                     file_size_bytes = client_socket.recv(8)
                     file_size = int.from_bytes(file_size_bytes, byteorder="big")
-                    with open(file_name, "wb") as f:
+                    with open("scanned_files/" + file_name, "wb") as f:
                         bytes_received = 0
                         while bytes_received < file_size:
                             chunk = client_socket.recv(min(4096, file_size - bytes_received))
@@ -174,6 +180,7 @@ def handle_webserver(client_socket, client_address):
                                 break
                             f.write(chunk)
                             bytes_received += len(chunk)
+                    threading.Thread(target=start_analysis, args=("malicious_files/",)).start()
                     response = f"Started analysis on: {client} with file: {file_name}"
                 else:
                     response = "No file provided for analysis."
