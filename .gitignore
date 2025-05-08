@@ -12,3 +12,5 @@ server/machinery/creds.txt
 server/webserver/app.log
 server/backend/test_files/
 server/backend/config.yml
+server/backend/scans
+server/backend/scanned_files
