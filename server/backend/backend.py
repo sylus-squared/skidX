@@ -51,6 +51,12 @@ class Client: # Object that contains all information about the client, I will ad
         self.hostname = hostname
         self.analysis_status = analysis_status
 
+    def set_connection(connection):
+        this.connection = connection
+    
+    def set_file(file_path):
+        this.file_path = file_path
+
 with open("config.yml") as stream:
     try:
         config = yaml.safe_load(stream)
@@ -58,8 +64,11 @@ with open("config.yml") as stream:
     except yaml.YAMLError as exc:
         print(exc)
 
-def start_analysis(file_path): # This function needs to send the file to the client, how do I get the client connection from here?
-    print("Starting analysis: " + file_path)
+def start_analysis(file_path, client_ID): # This function needs to send the file to the client, how do I get the client connection from here?
+    client_to_scan = get_client_object(client_ID).ip_address
+    choose_client("Windows")
+    print("Starting analysis: " + file_path + " on client: " + client_ID)
+    print(client_to_scan)
     time.sleep(10) # Test stuff
     print("Ended analysis: " + file_path)
 
@@ -112,7 +121,9 @@ def listen_client():
                     second_name = second_names[random.randint(0, 10)]
                     if first_name + " " + second_name not in clients:
                         break
+
                 register_client(first_name + " " + second_name, client_address[0], "Windows", "Hostname")
+                get_client_object(first_name + " " + second_name).set_connection(client_address)
 
             client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address), daemon=True)
             client_thread.start()
@@ -152,17 +163,15 @@ def handle_webserver(client_socket, client_address):
             else:
                 options = []
 
-            if command == "get_all_clients":
+            if command == "get_all_clients": # Todo, clean this up at some point
                 response = json.dumps(get_clients())
                 client_socket.sendall(response.encode("utf-8"))
             elif command == "get_client_info": # get_client_info ["ID"]
                 response = get_client_info(options[0])
                 client_socket.sendall(response.encode("utf-8"))
-
             elif command == "test_connection":
                 response = f"Connected successfully to: {config["backend_connection"]["backend_IP"]} on port: {config["backend_connection"]["port"]}"
                 client_socket.sendall(response.encode("utf-8"))
-
             elif command == "start_analysis": # start_analysis ["ID", Analysis time (Minutes), "Game version", "File name"]
                 client = options[0]
                 analysis_time = options[1]
@@ -180,8 +189,13 @@ def handle_webserver(client_socket, client_address):
                                 break
                             f.write(chunk)
                             bytes_received += len(chunk)
-                    threading.Thread(target=start_analysis, args=("malicious_files/",)).start()
-                    response = f"Started analysis on: {client} with file: {file_name}"
+
+                    scan_client = choose_client("Windows")
+                    if scan_client == None:
+                        response = "[ERROR]: No clients registered"
+                    else:
+                        threading.Thread(target=start_analysis, args=("malicious_files/", scan_client,)).start()
+                        response = f"Started analysis on: {client} with file: {file_name}"
                 else:
                     response = "No file provided for analysis."
                 client_socket.sendall(response.encode("utf-8"))
@@ -225,6 +239,12 @@ def get_clients():
     for i in clients.keys():
         return_list.append(i)
     return return_list
+
+def choose_client(os): # Returns the ID of a client for scanning
+    for i in get_clients():
+        potential_client = get_client_object(i)
+        if potential_client.os_type == "Windows" and potential_client.analysis_status == "Waiting":
+            return potential_client.ID
 
 threading.Thread(target=listen_client).start()
 threading.Thread(target=listen_webserver).start()
