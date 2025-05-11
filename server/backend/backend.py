@@ -42,6 +42,12 @@ second_names = [
     "Zebra"
 ]
 
+with open("config.yml") as stream:
+    try:
+        config = yaml.safe_load(stream)
+        #print(config)
+    except yaml.YAMLError as exc:
+        print("[ERROR]: Config not loaded, the program will not be able to continue. Caused by: " + exec)
 
 class Client: # Object that contains all information about the client, I will add more to this at some point
     def __init__(self, ID, ip_address, os_type, hostname, analysis_status):
@@ -51,24 +57,19 @@ class Client: # Object that contains all information about the client, I will ad
         self.hostname = hostname
         self.analysis_status = analysis_status
 
-    def set_connection(connection):
-        this.connection = connection
+    def set_connection(self, connection):
+        self.connection = connection
     
-    def set_file(file_path):
-        this.file_path = file_path
+    def set_file(self, file_path):
+        self.file_path = file_path
 
-with open("config.yml") as stream:
-    try:
-        config = yaml.safe_load(stream)
-        #print(config)
-    except yaml.YAMLError as exc:
-        print(exc)
+def start_analysis(file_path, client_ID):
+    client_object = get_client_object(client_ID)
+    client_to_scan = client_object.connection
 
-def start_analysis(file_path, client_ID): # This function needs to send the file to the client, how do I get the client connection from here?
-    client_to_scan = get_client_object(client_ID).ip_address
-    choose_client("Windows")
+    response = "Scan this file"
+    client_to_scan.sendall(response.encode("utf-8"))
     print("Starting analysis: " + file_path + " on client: " + client_ID)
-    print(client_to_scan)
     time.sleep(10) # Test stuff
     print("Ended analysis: " + file_path)
 
@@ -122,8 +123,9 @@ def listen_client():
                     if first_name + " " + second_name not in clients:
                         break
 
-                register_client(first_name + " " + second_name, client_address[0], "Windows", "Hostname")
-                get_client_object(first_name + " " + second_name).set_connection(client_address)
+            
+            register_client(first_name + " " + second_name, client_address[0], "Windows", "Hostname")
+            get_client_object(first_name + " " + second_name).set_connection(client_socket)
 
             client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address), daemon=True)
             client_thread.start()
