@@ -123,7 +123,6 @@ def listen_client():
                     if first_name + " " + second_name not in clients:
                         break
 
-            
             register_client(first_name + " " + second_name, client_address[0], "Windows", "Hostname")
             get_client_object(first_name + " " + second_name).set_connection(client_socket)
 
@@ -175,10 +174,11 @@ def handle_webserver(client_socket, client_address):
                 response = f"Connected successfully to: {config["backend_connection"]["backend_IP"]} on port: {config["backend_connection"]["port"]}"
                 client_socket.sendall(response.encode("utf-8"))
             elif command == "start_analysis": # start_analysis ["ID", Analysis time (Minutes), "Game version", "File name"]
-                client = options[0]
+                scan_client = options[0]
                 analysis_time = options[1]
                 game_version = options[2]
-                file_name = options[3] if len(options) > 3 else None
+                OS = options[3]
+                file_name = options[4] if len(options) > 3 else None
                 
                 if file_name: # Receive the file
                     file_size_bytes = client_socket.recv(8)
@@ -191,13 +191,14 @@ def handle_webserver(client_socket, client_address):
                                 break
                             f.write(chunk)
                             bytes_received += len(chunk)
-
-                    scan_client = choose_client("Windows")
+                    if get_client_object(scan_client) == None or get_client_info[4] != "Waiting":
+                        print("[INFO]: Specified client could not be used, selecting a random client")
+                        scan_client = choose_client(OS)
                     if scan_client == None:
                         response = "[ERROR]: No clients registered"
                     else:
                         threading.Thread(target=start_analysis, args=("malicious_files/", scan_client,)).start()
-                        response = f"Started analysis on: {client} with file: {file_name}"
+                        response = f"Started analysis on: {scan_client} with file: {file_name}"
                 else:
                     response = "No file provided for analysis."
                 client_socket.sendall(response.encode("utf-8"))
@@ -234,7 +235,7 @@ def get_client_object(ID): # Gets a client by its ID and returns the client obje
 
 def get_client_info(ID): # Gets a client by its ID and returns all its info
     client = clients.get(ID)
-    return [client.ID, client.ip_address, client.os_type, client.hostname]
+    return [client.ID, client.ip_address, client.os_type, client.hostname, client.analysis_status]
 
 def get_clients():
     return_list = []
@@ -245,7 +246,7 @@ def get_clients():
 def choose_client(os): # Returns the ID of a client for scanning
     for i in get_clients():
         potential_client = get_client_object(i)
-        if potential_client.os_type == "Windows" and potential_client.analysis_status == "Waiting":
+        if potential_client.os_type == os and potential_client.analysis_status == "Waiting":
             return potential_client.ID
 
 threading.Thread(target=listen_client).start()
